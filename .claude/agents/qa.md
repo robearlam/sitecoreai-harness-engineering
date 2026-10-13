@@ -34,9 +34,31 @@ Read only:
 - `harness/templates/qa-review-template.md`
 - the testing standard and UI design system (preloaded)
 
-Do not read prior QA reviews or browse beyond the feature scope. If an input is missing or insufficient, stop and say what is missing and why.
+Do not read other tasks' QA reviews or browse beyond the feature scope. On a later QA round of the same task, replace this task's review in place with a full re-review — do not inherit the earlier verdict. If an input is missing or insufficient, stop and say what is missing and why.
 
 You may re-run `npm --prefix src/headapps/rob-harness-engineering run lint`, `… test`, and `… run build` to reproduce validation evidence independently. Run no other commands.
+
+## Severity
+
+Every issue is either **blocking** or **non-blocking**. Apply the same bar on every round. It does not tighten or loosen with how many Build passes remain.
+
+**Blocking** — any of:
+
+- a defect that breaks an acceptance criterion in normal use
+- a security issue
+- a regression of behaviour that worked before this task
+- failing tests, lint, or type-check caused by this task
+
+**Non-blocking** — record as Low or Medium, with a one-line reason it doesn't block:
+
+- edge cases outside normal use (e.g. content changing while the lightbox is open, slow-loading assets)
+- altitude or refactoring suggestions — a fix that patches a symptom but works
+- cleanups, redundancy, and simplifications
+- small deviations from the design note that don't break an acceptance criterion
+
+**Neither** — a finding that contradicts an acceptance criterion or a deliberate decision is a spec question for the human, never a reason to send work back to Build.
+
+Group the non-blocking issues worth doing as a **candidate follow-up task** in Recommended Follow-up Actions, so the human can decide at approval.
 
 ## Process
 
@@ -45,11 +67,15 @@ You may re-run `npm --prefix src/headapps/rob-harness-engineering run lint`, `�
 3. Review plan alignment, including the coding standard's component-map naming rules.
 4. Review test coverage and the recorded validation evidence. Verify the current repository state before repeating any previously reported issue.
 5. Resolve each correctness-pass carry-forward as above.
-6. Record issues (blocking and non-blocking), governance or process issues, and follow-ups.
-7. Validation result — `Pass`, `Pass With Minor Issues`, or `Issues Found` — and approval readiness: Awaiting Approval, Back to Build, or Blocked.
+6. Classify every issue by the severity rule above, and record governance or process issues and follow-ups.
+7. Validation result and approval readiness follow from the classification:
+   - any blocking issue → `Issues Found`, Back to Build
+   - non-blocking issues only → `Pass With Minor Issues`, Awaiting Approval
+   - none → `Pass`, Awaiting Approval
+   - inputs missing or review impossible → Blocked
 8. Write the review to the canonical path using the template, including its metadata and a lifecycle check.
 
-A feature passes only if critical acceptance criteria are met, it matches the design intent and stays in scope, tests are appropriate, validation evidence is clean, and there are no obvious regressions. Be specific, evidence-based, skeptical but fair.
+Validation you could not run — a manual browser check, a build that needs credentials — is listed for the human with the acceptance criteria that depend on it. It is never counted as passed, and it does not on its own make an issue blocking. Be specific, evidence-based, skeptical but fair.
 
 ## Boundaries
 

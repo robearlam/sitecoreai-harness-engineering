@@ -15,6 +15,7 @@ Commands:
   approve                         human approval at a gate (before Build, or Complete)
   block --reason TEXT             stop the run as Blocked
   resume                          clear a Blocked stop after the human fixes it
+  review-scope                    files the task changed since its base commit, for /code-review
 
 Run from the repository root.
 """
@@ -175,7 +176,7 @@ def next_action(rs):
     agent = BY_NAME[rs.stage][3]
     dispatch = f"dispatch the `{agent}` agent for {rs.stage} ({rs.get('Current Run ID')})"
     if rs.stage == "QA":
-        return f"run the /code-review correctness pass on {rs.get('Branch')}, then {dispatch}"
+        return f"run `harness-state review-scope` and the /code-review correctness pass it prints, then {dispatch}"
     return dispatch
 
 
@@ -212,10 +213,23 @@ def dirty_code():
     return [line for line in out.splitlines() if not line[3:].startswith("harness/")]
 
 
-def commits_ahead():
-    """Commits on the task branch that are not on the base branch, or None if unknown."""
-    out = git("rev-list", "--count", f"{BASE_BRANCH}..HEAD")
+def base_commit(rs):
+    """The commit the task branched from, recorded at init (falls back to the base branch)."""
+    return rs.get("Base Commit") or BASE_BRANCH
+
+
+def commits_ahead(rs):
+    """Task commits since the base commit, or None if unknown."""
+    out = git("rev-list", "--count", f"{base_commit(rs)}..HEAD")
     return int(out.stdout.strip()) if out.returncode == 0 else None
+
+
+def task_changes(rs):
+    """Files the task changed since its base commit, outside harness/."""
+    out = git("diff", "--name-only", f"{base_commit(rs)}..HEAD")
+    if out.returncode != 0:
+        die(f"could not diff from base commit {base_commit(rs)}: {out.stderr.strip()}")
+    return [f for f in out.stdout.splitlines() if f and not f.startswith("harness/")]
 
 
 def ensure_task_branch(task_file):
@@ -236,10 +250,28 @@ def ensure_task_branch(task_file):
 def cmd_status(_):
     rs = RunState()
     for key in ("Task ID", "Current Status", "Current Stage", "Current Run ID",
-                "Workflow Mode", "CMS Configuration", "Branch", "Stop Reason"):
+                "Workflow Mode", "CMS Configuration", "Branch", "Base Commit", "Stop Reason"):
         print(f"{key}: {rs.get(key)}")
     print(f"Run Report: {rs.report}")
     print(f"Next: {next_action(rs)}")
+
+
+def cmd_review_scope(_):
+    rs = RunState()
+    if not rs.get("Base Commit"):
+        die("run-state has no Base Commit — this run was started before base tracking; review the task branch by hand")
+    files = task_changes(rs)
+    print(f"Base Commit: {rs.get('Base Commit')}")
+    print(f"Branch: {rs.get('Branch')}")
+    print(f"Task commits: {commits_ahead(rs)}")
+    if not files:
+        print("Changed files: none outside harness/ — nothing for the correctness pass to review")
+        return
+    print("Changed files (outside harness/):")
+    for f in files:
+        print(f"  {f}")
+    print(f"Invoke: /code-review high {' '.join(files)}")
+    print(f"Tell the review to consider only the changes in {rs.get('Base Commit')}..HEAD.")
 
 
 def cmd_init(args):
@@ -264,6 +296,9 @@ def cmd_init(args):
     title_m = re.search(r"^# .*?—\s*(.+)$", task_text, re.M)
     title = title_m.group(1).strip() if title_m else task_file.stem
     branch = ensure_task_branch(task_file)
+    base = git("rev-parse", "HEAD").stdout.strip()
+    if not base:
+        die("could not resolve HEAD for the base commit")
     date = today()
     report = f"harness/runs/{task}-run-report.md"
     rel = lambda stage: BY_NAME[stage][4].format(t=task)
@@ -277,6 +312,7 @@ def cmd_init(args):
         "WORKFLOW_MODE": mode,
         "CMS_CONFIGURATION": cms,
         "BRANCH": branch,
+        "BASE_COMMIT": base,
         "STOP_REASON": "None",
         "COMPLETED_STAGES": "- None",
         "FEATURE_SPEC_PATH": rel("Specification"),
@@ -300,7 +336,8 @@ def cmd_init(args):
         rvalues.update({
             "TASK_TITLE": title,
             "RUN_REPORT_ID": f"{task}-run-report",
-            "STAGE_HISTORY": f"### Initialization — {date}\n\nRun initialized by /run-task on `{branch}`. "
+            "STAGE_HISTORY": f"### Initialization — {date}\n\nRun initialized by /run-task on `{branch}` "
+                             f"at base commit `{base[:12]}`. "
                              f"Workflow mode: {mode}. CMS Configuration: {cms}.",
             "VALIDATION_EVIDENCE": "Pending — recorded by the Build stage.",
             "NOTES": "",
@@ -334,8 +371,8 @@ def cmd_advance(args):
         dirty = dirty_code()
         if dirty:
             die(f"{stage} left uncommitted changes outside harness/ — return to it to commit:\n  " + "\n  ".join(dirty))
-    if stage == "Build" and commits_ahead() == 0:
-        die(f"Build made no commits on {rs.get('Branch')} beyond {BASE_BRANCH} — return to Build to commit")
+    if stage == "Build" and commits_ahead(rs) == 0:
+        die(f"Build made no commits on {rs.get('Branch')} since base commit {base_commit(rs)} — return to Build to commit")
 
     current_id = rs.get("Current Run ID")
     outcome = f" — {args.outcome}" if args.outcome else ""
@@ -469,6 +506,7 @@ def main():
     s.add_argument("--reason", required=True)
     s.set_defaults(fn=cmd_block)
     sub.add_parser("resume").set_defaults(fn=cmd_resume)
+    sub.add_parser("review-scope").set_defaults(fn=cmd_review_scope)
     args = p.parse_args()
     args.fn(args)
 

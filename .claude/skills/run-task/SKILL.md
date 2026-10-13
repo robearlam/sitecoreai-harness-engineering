@@ -42,7 +42,7 @@ Repeat until `Next:` names a human action or the run is Blocked:
    |---|---|---|
    | Specification, Design, Planning | artifact produced | — |
    | Build | validation passed (or failures recorded as pre-existing) and work committed | — |
-   | QA | Pass, Pass With Minor Issues | Issues Found, Back to Build, or unmet acceptance criteria |
+   | QA | Pass, Pass With Minor Issues | Issues Found with at least one **blocking** issue (see Severity) |
    | CMS Configuration | guide produced and committed | — |
 
    If an agent escalates or reports Blocked, or `advance` fails twice, run `block --reason "…"` and stop. A failed `advance` changes nothing: fix the cause (usually by returning to the same agent) and retry once.
@@ -54,11 +54,24 @@ Repeat until `Next:` names a human action or the run is Blocked:
 
    Do not restate artifact content. A note past ~40 lines is paraphrasing an artifact.
 
+## Severity
+
+Only a **blocking** issue sends work back to Build. The QA agent's definition holds the rule:
+
+- **Blocking:** an acceptance criterion broken in normal use, a security issue, a regression, or failing tests, lint, or type-check.
+- **Non-blocking:** edge cases, refactoring suggestions, cleanups, and small design deviations. These become a candidate follow-up task for the human.
+- **Spec questions** go to the human, never to Build.
+
+The bar is the same on every round. Do not tighten it as Build passes run out, and do not loosen it to get a Pass.
+
+- If QA returns Issues Found but none of its issues meet the blocking bar, do not return the task to Build. Send the review back to QA once to reclassify.
+- When returning to Build, pass only the blocking issues as the fix list. Non-blocking ones stay in the review for the human.
+
 ## Correctness pass (before QA)
 
 The QA agent checks conformance against the spec, design, plan, and standards; it is not tuned to hunt runtime bugs. So whenever `Next:` says to run the correctness pass, do it before dispatching QA:
 
-1. Invoke `/code-review high` against the task branch named in run-state. Wait for its result.
+1. Run `harness-state review-scope`. It prints the files the task changed since its base commit — the commit `init` recorded before any task work — and the `/code-review high …` invocation for exactly those files. Invoke it, telling the review to consider only the changes in `<base commit>..HEAD`, so commits that were already on the branch before the task started stay out of scope. Wait for its result.
 2. Do not act on its findings yourself. It cannot see the spec or standards, so some findings will contradict deliberate decisions. Pass every finding to QA as a carry-forward, with its `file:line` and failure scenario.
 3. QA confirms or rejects each against the spec. Confirmed defects go back to Build through QA's normal verdict.
 4. Record in the run report how many findings there were and what QA decided for each.
@@ -67,7 +80,7 @@ If the review cannot run, record that in the run report and dispatch QA anyway.
 
 ## Verifying Build claims
 
-Check Build's evidence before advancing: the commit exists, and its recorded validation results are plausible. Re-running `npm --prefix src/headapps/rob-harness-engineering test` yourself is worth it when Build's evidence is thin or contradicts itself. Carry forward anything you could not confirm. The script refuses to advance Build with uncommitted changes outside `harness/`, or with no commits on the task branch.
+Check Build's evidence before advancing: the commit exists, and its recorded validation results are plausible. Re-running `npm --prefix src/headapps/rob-harness-engineering test` yourself is worth it when Build's evidence is thin or contradicts itself. Carry forward anything you could not confirm. The script refuses to advance Build with uncommitted changes outside `harness/`, or with no commits since the run's base commit.
 
 ## Mid-flight amendments
 

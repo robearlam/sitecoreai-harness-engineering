@@ -14,7 +14,8 @@ Current Stage: {{CURRENT_STAGE}}
 Current Run ID: {{CURRENT_RUN_ID}}  
 Workflow Mode: {{WORKFLOW_MODE}}  
 CMS Configuration: {{CMS_CONFIGURATION}}  
-Branch: {{BRANCH}}
+Branch: {{BRANCH}}  
+Base Commit: {{BASE_COMMIT}}
 
 Stop Reason: {{STOP_REASON}}
 

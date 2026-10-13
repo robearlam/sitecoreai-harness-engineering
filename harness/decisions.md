@@ -54,3 +54,30 @@ Why the harness looks the way it does. Each entry records what was chosen, why, 
 - **Generating acceptance criteria in full.** That is the Specification stage's job; the task carries only the minimum.
 
 **When to revisit:** If task files start needing a deterministic check beyond what `harness-state init` already validates.
+
+---
+
+## D-003: Explicit severity bar for QA, and a recorded base commit per run
+
+**What we chose (2026-10-13):** Two changes, both from the T006 dry run.
+
+1. **Severity rule.** The QA agent classifies every issue as blocking or non-blocking, and `/run-task` sends work back to Build only for blocking issues.
+   - **Blocking:** an acceptance criterion broken in normal use, a security issue, a regression, or failing tests, lint, or type-check caused by the task.
+   - **Non-blocking:** edge cases, refactoring suggestions, cleanups, and small design deviations. These are grouped into a candidate follow-up task for the human.
+   - **Spec questions:** spec contradictions go to the human, never to Build.
+
+   The bar is the same on every round.
+2. **Base commit.** `harness-state init` records the commit HEAD was at before any task work. `harness-state review-scope` lists the files the task changed since then, outside `harness/`, and prints the `/code-review` invocation for exactly those files. Build's "made no commits" check now counts from the base commit too.
+
+**Why:**
+
+- In the dry run, each `/code-review` pass surfaced new candidates, including bugs introduced by the previous fix. Nothing defined what blocked, so the task used all 3 Build passes and QA only held the line in round 3 because the orchestrator spelled out the bar in its prompt. Prompt-dependent rules drift between runs; the agent definition is where they belong.
+- The dry run branched from `harness/claude-native` rather than `main`. Diffing against `main` would have pulled the harness commits into the review, so the orchestrator had to narrow the scope by hand.
+- The same branch shape silently disabled Build's commit check: `main..HEAD` was already non-zero from the harness commits, so a Build pass that committed nothing would have advanced.
+
+**What we rejected:**
+
+- **Tightening the bar as Build passes run out.** That makes verdicts depend on run history instead of the code. A consistent bar with a follow-up task is more honest.
+- **Letting `/code-review` diff against `main`.** That only works when every task starts from `main`, which rehearsals, stacked work, and demo branches don't.
+
+**When to revisit:** If non-blocking findings pile up unaddressed in follow-up tasks, or if the correctness pass's repeated findings across rounds (6 of 10 in the dry run's third pass) become worth deduplicating before QA.

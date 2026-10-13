@@ -66,7 +66,9 @@ Two settings in the task header shape the run, and `/new-task` picks them for yo
 
 ### 2. Run it
 
-`/run-task T00X` switches to a `feature/T00X-…` branch (if you're on `main`), initialises run-state and the run report, then dispatches each stage in turn. Before QA it runs the built-in `/code-review high` on the task branch and hands its findings to QA, which confirms or rejects each against the spec. When QA finds blocking issues the task goes back to Build — at most 3 Build passes, then the run stops as Blocked.
+`/run-task T00X` switches to a `feature/T00X-…` branch (if you're on `main`), records the run's base commit, initialises run-state and the run report, then dispatches each stage in turn. Before QA it runs the built-in `/code-review high` on just the files the task changed since that base commit, and hands its findings to QA, which confirms or rejects each against the spec.
+
+Only a **blocking** issue sends the task back to Build: an acceptance criterion broken in normal use, a security issue, a regression, or failing tests, lint, or type-check. Edge cases, refactoring suggestions, and cleanups are recorded as non-blocking and grouped into a candidate follow-up task for you to decide at approval. At most 3 Build passes, then the run stops as Blocked.
 
 The run stops at Awaiting Approval. `/run-task` with no argument resumes the active task from run-state.
 

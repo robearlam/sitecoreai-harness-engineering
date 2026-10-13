@@ -13,7 +13,8 @@ Task File: {{TASK_FILE}}
 Run Report ID: {{RUN_REPORT_ID}}  
 Workflow Mode: {{WORKFLOW_MODE}}  
 CMS Configuration: {{CMS_CONFIGURATION}}  
-Branch: {{BRANCH}}
+Branch: {{BRANCH}}  
+Base Commit: {{BASE_COMMIT}}
 
 ---
 
