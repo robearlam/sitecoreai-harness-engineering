@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --prefix src/headapps/rob-harness-engineering run lint)",
+      "Bash(npm --prefix src/headapps/rob-harness-engineering run lint *)",
+      "Bash(npm --prefix src/headapps/rob-harness-engineering test)",
+      "Bash(npm --prefix src/headapps/rob-harness-engineering test *)",
+      "Bash(npm --prefix src/headapps/rob-harness-engineering run build)",
+      "Bash(npm run lint)",
+      "Bash(npm test)",
+      "Bash(npm test *)",
+      "Bash(npm run build)",
+      "Bash(harness/verify-stage.sh *)",
+      "Bash(.claude/skills/run-task/scripts/harness-state *)"
+    ],
+    "deny": [
+      "Edit(harness/templates/**)",
+      "Edit(.claude/agents/**)",
+      "Edit(.claude/skills/**)",
+      "Edit(.claude/hooks/**)",
+      "Edit(harness/run-state.md)",
+      "Edit(harness/verify-stage.sh)",
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Edit(**/.env)",
+      "Edit(**/.env.local)",
+      "Bash(dotnet sitecore ser push*)",
+      "Bash(dotnet sitecore publish*)"
+    ],
+    "ask": [
+      "Edit(harness/tasks/**)",
+      "Edit(harness/backlog/**)",
+      "Bash(git push*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/verify-stage-on-stop.sh",
+            "timeout": 30,
+            "statusMessage": "Verifying stage artifacts…"
+          }
+        ]
+      }
+    ]
+  }
+}

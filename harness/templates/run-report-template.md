@@ -11,10 +11,9 @@ Task File: {{TASK_FILE}}
 ## Run
 
 Run Report ID: {{RUN_REPORT_ID}}  
-Current Stage: {{CURRENT_STAGE}}  
-Current Run ID: {{CURRENT_RUN_ID}}
-
-Overall Status: {{OVERALL_STATUS}}
+Workflow Mode: {{WORKFLOW_MODE}}  
+CMS Configuration: {{CMS_CONFIGURATION}}  
+Branch: {{BRANCH}}
 
 ---
 
@@ -29,20 +28,14 @@ Overall Status: {{OVERALL_STATUS}}
 Feature Specification: {{FEATURE_SPEC_PATH}}  
 Design Note: {{DESIGN_NOTE_PATH}}  
 Implementation Plan: {{IMPLEMENTATION_PLAN_PATH}}  
-QA Review: {{QA_REVIEW_PATH}}
+QA Review: {{QA_REVIEW_PATH}}  
+CMS Configuration Guide: {{CMS_CONFIG_PATH}}
 
 ---
 
 ## Validation Evidence
 
 {{VALIDATION_EVIDENCE}}
-
----
-
-## Stop / Pause State
-
-Stop Reason: {{STOP_REASON}}  
-Next Expected Action: {{NEXT_EXPECTED_ACTION}}
 
 ---
 
