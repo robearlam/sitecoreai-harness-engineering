@@ -39,3 +39,18 @@ Why the harness looks the way it does. Each entry records what was chosen, why, 
 - **Agent memory and an architectural health scan.** Both earned their place in Gym Tracker after 30 tasks. With five tasks run here, they'd be speculative.
 
 **When to revisit:** If a second runtime becomes important again, or once enough tasks have run to justify review-stage memory.
+
+---
+
+## D-002: Task definitions are created with the /new-task skill
+
+**What we chose (2026-10-13):** A human-invoked `/new-task` skill creates task files from a backlog ID or a short description. It allocates the next `T###` ID, fills the task template, chooses `Workflow` and `CMS Configuration` with stated reasoning, and updates the backlog. The task template was expanded to match the task files actually written (Scope, Dependencies, Risks, Task Notes).
+
+**Why:** Task files were copied from the template by hand. Nothing allocated IDs or checked the workflow settings, the template was thinner than every real task file (T005 has Scope, Dependencies, and Risks sections the template lacked), and the backlog drifted — B006 still read "Planned" after T005 delivered it. The task file is the boundary every later stage works within, so it deserves the same consistency as the stage artifacts.
+
+**What we rejected:**
+
+- **A task-writing stage agent dispatched by `/run-task`.** Creating a task is a human decision about what to build next, made before a run exists; it doesn't belong inside the run.
+- **Generating acceptance criteria in full.** That is the Specification stage's job; the task carries only the minimum.
+
+**When to revisit:** If task files start needing a deterministic check beyond what `harness-state init` already validates.

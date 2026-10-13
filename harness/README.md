@@ -39,7 +39,7 @@ Every stage produces an artifact at a canonical path. The next stage reads only 
 | Path | What's in it |
 |---|---|
 | `../.claude/agents/` | The stage agents — each one's role, input contract, model, tools, and preloaded skills in a single file. |
-| `../.claude/skills/` | `run-task` (the orchestrator, with its `harness-state` script), the `approve` gate command, and the coding, testing, and UI design-system standards preloaded into the stage agents. |
+| `../.claude/skills/` | `new-task` (creates task definitions), `run-task` (the orchestrator, with its `harness-state` script), the `approve` gate command, and the coding, testing, and UI design-system standards preloaded into the stage agents. |
 | `../.claude/hooks/` | SessionStart loads the live run-state; SubagentStop verifies each stage's artifact. |
 | `../.claude/settings.json` | Governance: what agents may and may not edit or run. |
 | `templates/` | The blueprint for every artifact (feature spec, design note, plan, QA review, CMS guide, run state, run report, task). |
@@ -57,9 +57,9 @@ Every stage produces an artifact at a canonical path. The next stage reads only 
 
 ### 1. Create a task
 
-Copy `templates/task-template.md` to `tasks/T00X-your-feature.md`. Fill in the title, summary, and approval section. Acceptance criteria can be left blank — the Specification stage produces them.
+Run `/new-task B0XX` with a backlog ID, or `/new-task <short description>`. It allocates the next task ID, writes `tasks/T00X-your-feature.md` from the template (summary, scope, minimum acceptance criteria, dependencies, risks), and marks the backlog entry `Ready for Spec`. Review the file before running it — it's the boundary every later stage works within.
 
-Two settings in the task header shape the run:
+Two settings in the task header shape the run, and `/new-task` picks them for you:
 
 - `Workflow: Lightweight` skips Design. Use it only for tasks with no new UI surface and no design decisions (configuration, CI, data). Anything else is `Standard`.
 - `CMS Configuration: Not Required` skips the CMS Configuration stage, for tasks that add or change no Sitecore-rendered component.

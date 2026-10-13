@@ -11,7 +11,7 @@ This is a monorepo with two distinct concerns:
 
 ## How work flows through this repo
 
-Every feature is delivered through the harness. `/run-task TASKID` makes the main session the orchestrator: it dispatches one stage agent per stage from `.claude/agents/`, and the human closes the gates with `/approve`. Before doing feature work, read `harness/README.md`.
+Every feature is delivered through the harness. `/new-task` turns a backlog item into a task definition, and `/run-task TASKID` makes the main session the orchestrator: it dispatches one stage agent per stage from `.claude/agents/`, and the human closes the gates with `/approve`. Before doing feature work, read `harness/README.md`.
 
 | You want to… | Read… |
 |---|---|
@@ -26,7 +26,7 @@ Every feature is delivered through the harness. `/run-task TASKID` makes the mai
 
 ```
 .claude/agents/      Stage agents — role, input contract, model, tools, preloaded skills
-.claude/skills/      /run-task (orchestrator + state script), /approve, and the standards
+.claude/skills/      /new-task, /run-task (orchestrator + state script), /approve, and the standards
 .claude/hooks/       SessionStart (run-state context) and SubagentStop (artifact verification)
 .claude/settings.json  Governance: permission allow/deny rules and hook wiring
 harness/             Templates, tasks, artifacts, run reports, run state, decisions
