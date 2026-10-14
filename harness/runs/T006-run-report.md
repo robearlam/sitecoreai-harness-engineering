@@ -44,6 +44,18 @@ Outcome: Committed 2735474; lint pass, 81/81 tests pass (re-run by orchestrator)
 
 Returned to Build: QA blocking: arrow-key navigation loses focus to body after one press when focus is on the slide trigger (AC13)
 
+### Build — RUN-2026-10-14-T006-BUILD-2 — 2026-10-14
+
+Outcome: Rework 75673cd fixes AC13 focus loss; 82/82 tests (re-run by orchestrator); direct ESLint on ImageGallery 0 errors; next build unverified (MV-007). `verify-stage.sh build` passed.
+
+### QA — RUN-2026-10-14-T006-QA-2 — 2026-10-14
+
+Outcome: QA round 2: Pass With Minor Issues; no blocking issues; manual/live checks unverified. `verify-stage.sh qa` passed.
+
+### CMS Configuration — RUN-2026-10-14-T006-CMS — 2026-10-14
+
+Outcome: CMS guide committed (68f10d3); serialization includes already cover all paths. `verify-stage.sh cms` passed.
+
 ---
 
 ## Artifact Paths
@@ -121,3 +133,15 @@ None.
   - index clamp (#6)
   - shared test helper (#8)
   - duplicate heading id (#2), empty-image filter (#4), backdrop gap (#5) if not done now
+- **Build pass 2 (orchestrator check):** rework commit 75673cd exists and changes only the carousel and its test. The orchestrator re-ran `npm test`: 82 of 82 pass. Build ran ESLint directly over `src/components/ImageGallery`: 0 errors, and the 4 warnings were already there. `next build` is still **unverified** (MV-007).
+- **Correctness pass round 2:** 9 findings, all passed to QA.
+  - Repeats of round 1: #1–#3 stay non-blocking.
+  - New, confirmed non-blocking: #4 stale live-region text after the lightbox closes (predates the rework), #5 modifier keys swallowed (Alt+Left), #6 double announcement after the rework (verbose, not a regression).
+  - Cleanups: #7, #8 and #9; #9's claim that the guards differ was rejected.
+- **QA round 2:** Pass With Minor Issues. The AC13 fix is verified in code, and the regression test would fail without it. A real-browser check is still **unverified**.
+- **Spec question for the human:** a first-slide `priority` preload on every gallery competes with the hero image for LCP. It was a deliberate design and plan decision, so it is not raised as a defect. `priority` is also deprecated in Next 16 in favour of `preload`.
+- **Quick wins if the human wants them before Complete:** QA round-2 findings 1, 4, 5 and 7 are one- or two-line fixes. Otherwise they join the "Image Gallery hardening" follow-up.
+- **CMS:** guide committed in 68f10d3. Serialization includes were verified against `nextjs-starter.module.json`, and no module change was needed.
+- **CMS (for the human):** the rendering and templates use names with spaces (`Image Gallery`, `Gallery Image`). This differs from T005's `PromoCardGrid`, but the Component Name stays `ImageGallery`.
+- **CMS (for the human):** the Multilist and datasource queries use `@@templatename`. Swap in `@@templateid` once the template GUIDs exist.
+- **CMS (for the human):** the AC24 editing-metadata result is recorded during the section-8 checks in Pages.
