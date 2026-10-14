@@ -1,0 +1,515 @@
+#!/usr/bin/env python3
+"""harness-state — the mechanical half of the harness orchestrator.
+
+Owns every deterministic run-state transition so the orchestrator (the
+/run-task skill) only makes judgment calls. All state lives in
+harness/run-state.md; history is appended to the task's run report.
+
+Commands:
+  status                          where the run is and what happens next
+  init TASK [--approval-before-build] [--force]
+                                  start a task: task branch, run-state, run report
+  advance [--outcome TEXT]        current stage passed: verify, record, move on
+  return-to-build --reason TEXT   QA or the human reviewer sent it back
+  amend STAGE                     mid-flight amendment: loop back with -REVn
+  approve                         human approval at a gate (before Build, or Complete)
+  block --reason TEXT             stop the run as Blocked
+  resume                          clear a Blocked stop after the human fixes it
+  review-scope                    files the task changed since its base commit, for /code-review
+
+Run from the repository root.
+"""
+
+import argparse
+import datetime
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path.cwd()
+HARNESS = ROOT / "harness"
+RUN_STATE = HARNESS / "run-state.md"
+VERIFY = HARNESS / "verify-stage.sh"
+TEMPLATES = HARNESS / "templates"
+BASE_BRANCH = "main"
+
+# (stage name, run-ID code, verify-stage.sh name, stage agent, artifact path)
+STAGES = [
+    ("Specification", "SPEC", "spec", "po-spec", "harness/artifacts/specs/{t}-feature-spec.md"),
+    ("Design", "DESIGN", "design", "feature-design", "harness/artifacts/design/{t}-design-note.md"),
+    ("Implementation Planning", "PLAN", "plan", "tech-lead", "harness/artifacts/plans/{t}-implementation-plan.md"),
+    ("Build", "BUILD", "build", "build", "harness/runs/{t}-run-report.md"),
+    ("QA", "QA", "qa", "qa", "harness/artifacts/qa/{t}-qa-review.md"),
+    ("CMS Configuration", "CMS", "cms", "cms-config", "harness/artifacts/cms-config/{t}-cms-config.md"),
+    ("Awaiting Approval", None, None, None, None),
+    ("Complete", None, None, None, None),
+]
+BY_NAME = {s[0]: s for s in STAGES}
+COMMITTING_STAGES = ("Build", "CMS Configuration")  # must leave no uncommitted code
+MAX_BUILD_PASSES = 3  # initial pass + 2 remediation passes per revision
+HUMAN = "Awaiting Human Action"
+
+
+def die(msg, code=1):
+    print(f"error: {msg}", file=sys.stderr)
+    sys.exit(code)
+
+
+def today():
+    return datetime.date.today().isoformat()
+
+
+def git(*args):
+    return subprocess.run(["git", *args], capture_output=True, text=True)
+
+
+# ---------------------------------------------------------------- run-state
+
+class RunState:
+    def __init__(self):
+        if not RUN_STATE.exists():
+            die("harness/run-state.md does not exist — start a task with `init TASK`")
+        self.text = RUN_STATE.read_text()
+
+    def get(self, key):
+        m = re.search(rf"^{re.escape(key)}:[ \t]*(.*?)[ \t]*$", self.text, re.M)
+        return m.group(1) if m else ""
+
+    def set(self, key, value):
+        pattern = rf"^({re.escape(key)}:)[ \t]*.*?([ \t]*)$"
+        if not re.search(pattern, self.text, re.M):
+            die(f"run-state has no `{key}:` field")
+        self.text = re.sub(pattern, lambda m: f"{m.group(1)} {value}{m.group(2)}", self.text, count=1, flags=re.M)
+
+    def _section(self, title):
+        m = re.search(rf"(^## {re.escape(title)}\n\n)(.*?)(\n+---|\n*\Z)", self.text, re.M | re.S)
+        if not m:
+            die(f"run-state has no `## {title}` section")
+        return m
+
+    def completed(self):
+        body = self._section("Completed Stages").group(2)
+        return [line[2:] for line in body.splitlines() if line.startswith("- ") and line != "- None"]
+
+    def add_completed(self, line):
+        m = self._section("Completed Stages")
+        lines = [f"- {e}" for e in self.completed()] + [f"- {line}"]
+        self.text = self.text[: m.start(2)] + "\n".join(lines) + self.text[m.end(2):]
+
+    def set_notes(self, notes):
+        m = re.search(r"(^## Notes\n\n)(.*?)(\n*<!--|\n*\Z)", self.text, re.M | re.S)
+        if not m:
+            die("run-state has no `## Notes` section")
+        self.text = self.text[: m.start(2)] + notes + self.text[m.end(2):]
+
+    def save(self):
+        RUN_STATE.write_text(self.text)
+
+    @property
+    def task(self):
+        return self.get("Task ID")
+
+    @property
+    def stage(self):
+        return self.get("Current Stage")
+
+    @property
+    def status(self):
+        return self.get("Current Status")
+
+    @property
+    def mode(self):
+        return self.get("Workflow Mode") or "Standard"
+
+    @property
+    def cms_required(self):
+        return self.get("CMS Configuration") != "Not Required"
+
+    @property
+    def report(self):
+        return self.get("Run Report")
+
+    @property
+    def revision(self):
+        m = re.search(r"-REV(\d+)", self.get("Current Run ID"))
+        return int(m.group(1)) if m else 1
+
+
+def sequence(rs):
+    skip = set()
+    if rs.mode == "Lightweight":
+        skip.add("Design")
+    if not rs.cms_required:
+        skip.add("CMS Configuration")
+    return [s[0] for s in STAGES if s[0] not in skip]
+
+
+def next_stage(rs):
+    seq = sequence(rs)
+    return seq[seq.index(rs.stage) + 1]
+
+
+def run_id(rs, stage, rev=None):
+    code = BY_NAME[stage][1]
+    rev = rs.revision if rev is None else rev
+    revtag = f"-REV{rev}" if rev > 1 else ""
+    same = re.compile(rf"RUN-\d{{4}}-\d\d-\d\d-{re.escape(rs.task)}-{code}{revtag}(?:-\d+)?\b(?!-REV)")
+    prior = sum(1 for entry in rs.completed() if same.search(entry))
+    return f"RUN-{today()}-{rs.task}-{code}{revtag}" + (f"-{prior + 1}" if prior else "")
+
+
+def artifact(rs, stage):
+    path = BY_NAME[stage][4]
+    return path.format(t=rs.task) if path else "-"
+
+
+def next_action(rs):
+    if rs.status == "Complete":
+        return "none — start the next task with /run-task TASKID"
+    if rs.status == "Blocked":
+        return "human resolves the blocker, then `harness-state resume`"
+    if rs.stage == "Awaiting Approval":
+        return "human reviews the QA review and CMS guide, then /approve"
+    if rs.stage == "Build" and rs.status == HUMAN:
+        return "approval required before Build — /approve"
+    agent = BY_NAME[rs.stage][3]
+    dispatch = f"dispatch the `{agent}` agent for {rs.stage} ({rs.get('Current Run ID')})"
+    if rs.stage == "QA":
+        return f"run `harness-state review-scope` and the /code-review correctness pass it prints, then {dispatch}"
+    return dispatch
+
+
+def refresh_notes(rs):
+    rs.set_notes(
+        f"{rs.task} is at {rs.stage} ({rs.status}). Next: {next_action(rs)}.\n"
+        f"History: {rs.report}"
+    )
+
+
+def append_report(rs, heading, body):
+    path = ROOT / rs.report
+    if not path.exists():
+        die(f"run report {rs.report} does not exist")
+    text = path.read_text()
+    entry = f"### {heading}\n\n{body}\n"
+    marker = re.search(r"\n---\n\n## Artifact Paths", text)
+    if marker:  # keep stage history above the report's trailing sections
+        text = text[: marker.start()].rstrip("\n") + "\n\n" + entry + text[marker.start():]
+    else:
+        text = text.rstrip("\n") + "\n\n" + entry
+    path.write_text(text)
+
+
+def verify(stage_key, task):
+    result = subprocess.run([str(VERIFY), stage_key, task], capture_output=True, text=True)
+    print(result.stdout, end="", flush=True)
+    return result.returncode == 0
+
+
+def dirty_code():
+    """Uncommitted changes outside harness/ (Build and CMS must commit their work)."""
+    out = git("status", "--porcelain").stdout
+    return [line for line in out.splitlines() if not line[3:].startswith("harness/")]
+
+
+def base_commit(rs):
+    """The commit the task branched from, recorded at init (falls back to the base branch)."""
+    return rs.get("Base Commit") or BASE_BRANCH
+
+
+def commits_ahead(rs):
+    """Task commits since the base commit, or None if unknown."""
+    out = git("rev-list", "--count", f"{base_commit(rs)}..HEAD")
+    return int(out.stdout.strip()) if out.returncode == 0 else None
+
+
+def task_changes(rs):
+    """Files the task changed since its base commit, outside harness/."""
+    out = git("diff", "--name-only", f"{base_commit(rs)}..HEAD")
+    if out.returncode != 0:
+        die(f"could not diff from base commit {base_commit(rs)}: {out.stderr.strip()}")
+    return [f for f in out.stdout.splitlines() if f and not f.startswith("harness/")]
+
+
+def ensure_task_branch(task_file):
+    current = git("branch", "--show-current").stdout.strip()
+    if current and current != BASE_BRANCH:
+        return current
+    branch = f"feature/{task_file.stem}"
+    exists = git("rev-parse", "--verify", "--quiet", branch).returncode == 0
+    result = git("checkout", branch) if exists else git("checkout", "-b", branch)
+    if result.returncode != 0:
+        die(f"could not switch to {branch}: {result.stderr.strip()}")
+    print(f"On task branch {branch}")
+    return branch
+
+
+# ----------------------------------------------------------------- commands
+
+def cmd_status(_):
+    rs = RunState()
+    for key in ("Task ID", "Current Status", "Current Stage", "Current Run ID",
+                "Workflow Mode", "CMS Configuration", "Branch", "Base Commit", "Stop Reason"):
+        print(f"{key}: {rs.get(key)}")
+    print(f"Run Report: {rs.report}")
+    print(f"Next: {next_action(rs)}")
+
+
+def cmd_review_scope(_):
+    rs = RunState()
+    if not rs.get("Base Commit"):
+        die("run-state has no Base Commit — this run was started before base tracking; review the task branch by hand")
+    files = task_changes(rs)
+    print(f"Base Commit: {rs.get('Base Commit')}")
+    print(f"Branch: {rs.get('Branch')}")
+    print(f"Task commits: {commits_ahead(rs)}")
+    if not files:
+        print("Changed files: none outside harness/ — nothing for the correctness pass to review")
+        return
+    print("Changed files (outside harness/):")
+    for f in files:
+        print(f"  {f}")
+    print(f"Invoke: /code-review high {' '.join(files)}")
+    print(f"Tell the review to consider only the changes in {rs.get('Base Commit')}..HEAD.")
+
+
+def cmd_init(args):
+    task = args.task
+    if RUN_STATE.exists() and not args.force:
+        current = RunState()
+        if current.status not in ("Complete", ""):
+            die(f"{current.task} is still {current.status} at {current.stage}; finish it or pass --force")
+    matches = sorted((HARNESS / "tasks").glob(f"{task}-*.md"))
+    if len(matches) != 1:
+        die(f"expected one task file harness/tasks/{task}-*.md, found {len(matches)}")
+    task_file = matches[0]
+    task_text = task_file.read_text()
+    m = re.search(r"^Workflow:[ \t]*(\w+)", task_text, re.M)
+    mode = m.group(1) if m else "Standard"
+    if mode not in ("Standard", "Lightweight"):
+        die(f"unknown Workflow mode `{mode}` in {task_file.name}")
+    m = re.search(r"^CMS Configuration:[ \t]*(.+?)[ \t]*$", task_text, re.M)
+    cms = m.group(1) if m else "Required"
+    if cms not in ("Required", "Not Required"):
+        die(f"unknown CMS Configuration value `{cms}` in {task_file.name}")
+    title_m = re.search(r"^# .*?—\s*(.+)$", task_text, re.M)
+    title = title_m.group(1).strip() if title_m else task_file.stem
+    branch = ensure_task_branch(task_file)
+    base = git("rev-parse", "HEAD").stdout.strip()
+    if not base:
+        die("could not resolve HEAD for the base commit")
+    date = today()
+    report = f"harness/runs/{task}-run-report.md"
+    rel = lambda stage: BY_NAME[stage][4].format(t=task)
+
+    values = {
+        "TASK_ID": task,
+        "TASK_FILE": f"harness/tasks/{task_file.name}",
+        "CURRENT_STATUS": "Active",
+        "CURRENT_STAGE": "Specification",
+        "CURRENT_RUN_ID": f"RUN-{date}-{task}-SPEC",
+        "WORKFLOW_MODE": mode,
+        "CMS_CONFIGURATION": cms,
+        "BRANCH": branch,
+        "BASE_COMMIT": base,
+        "STOP_REASON": "None",
+        "COMPLETED_STAGES": "- None",
+        "FEATURE_SPEC_PATH": rel("Specification"),
+        "DESIGN_NOTE_PATH": "N/A" if mode == "Lightweight" else rel("Design"),
+        "IMPLEMENTATION_PLAN_PATH": rel("Implementation Planning"),
+        "QA_REVIEW_PATH": rel("QA"),
+        "CMS_CONFIG_PATH": rel("CMS Configuration") if cms == "Required" else "N/A",
+        "RUN_REPORT_PATH": report,
+        "REQUIRE_APPROVAL_BEFORE_BUILD": "Yes" if args.approval_before_build else "No",
+        "REQUIRE_APPROVAL_BEFORE_COMPLETE": "Yes",
+        "NOTES": "",
+    }
+    text = (TEMPLATES / "run-state-template.md").read_text()
+    for k, v in values.items():
+        text = text.replace("{{" + k + "}}", v)
+    RUN_STATE.write_text(text)
+
+    report_path = ROOT / report
+    if not report_path.exists():
+        rvalues = dict(values)
+        rvalues.update({
+            "TASK_TITLE": title,
+            "RUN_REPORT_ID": f"{task}-run-report",
+            "STAGE_HISTORY": f"### Initialization — {date}\n\nRun initialized by /run-task on `{branch}` "
+                             f"at base commit `{base[:12]}`. "
+                             f"Workflow mode: {mode}. CMS Configuration: {cms}.",
+            "VALIDATION_EVIDENCE": "Pending — recorded by the Build stage.",
+            "NOTES": "",
+        })
+        rtext = (TEMPLATES / "run-report-template.md").read_text()
+        for k, v in rvalues.items():
+            rtext = rtext.replace("{{" + k + "}}", v)
+        report_path.write_text(rtext)
+
+    rs = RunState()
+    refresh_notes(rs)
+    rs.save()
+    if not verify("init", task):
+        die("initialization failed verification")
+    cmd_status(args)
+
+
+def require(rs, cond, msg):
+    if not cond:
+        die(f"{msg} (current: {rs.stage}, {rs.status})")
+
+
+def cmd_advance(args):
+    rs = RunState()
+    stage = rs.stage
+    require(rs, rs.status == "Active" and BY_NAME.get(stage, (None,) * 4)[3], "advance needs an Active agent stage")
+    key = BY_NAME[stage][2]
+    if not verify(key, rs.task):
+        die(f"{stage} failed verification — state not advanced")
+    if stage in COMMITTING_STAGES:
+        dirty = dirty_code()
+        if dirty:
+            die(f"{stage} left uncommitted changes outside harness/ — return to it to commit:\n  " + "\n  ".join(dirty))
+    if stage == "Build" and commits_ahead(rs) == 0:
+        die(f"Build made no commits on {rs.get('Branch')} since base commit {base_commit(rs)} — return to Build to commit")
+
+    current_id = rs.get("Current Run ID")
+    outcome = f" — {args.outcome}" if args.outcome else ""
+    rs.add_completed(f"{stage} ({current_id}) — {artifact(rs, stage)}{outcome}")
+    append_report(rs, f"{stage} — {current_id} — {today()}",
+                  f"Outcome: {args.outcome or 'complete'}. `verify-stage.sh {key}` passed.")
+
+    nxt = next_stage(rs)
+    rs.set("Current Stage", nxt)
+    if nxt == "Awaiting Approval":
+        rs.set("Current Run ID", "—")
+        rs.set("Current Status", HUMAN)
+        rs.set("Stop Reason", "All agent stages passed; awaiting human review and approval")
+    else:
+        rs.set("Current Run ID", run_id(rs, nxt))
+        if nxt == "Build" and rs.get("Require Approval Before Build") == "Yes":
+            rs.set("Current Status", HUMAN)
+            rs.set("Stop Reason", "Approval required before Build")
+        else:
+            rs.set("Current Status", "Active")
+            rs.set("Stop Reason", "None")
+    refresh_notes(rs)
+    rs.save()
+    cmd_status(args)
+
+
+def cmd_return_to_build(args):
+    rs = RunState()
+    require(rs, rs.stage in ("QA", "Awaiting Approval"),
+            "return-to-build is only valid from QA or Awaiting Approval")
+    current_id = rs.get("Current Run ID")
+    label = rs.stage if rs.stage != "Awaiting Approval" else "Awaiting Approval (human review)"
+    rs.add_completed(f"{label} ({current_id}) — returned to Build: {args.reason}")
+    append_report(rs, f"{label} — {current_id} — {today()}", f"Returned to Build: {args.reason}")
+
+    build_id = run_id(rs, "Build")
+    passes = int(build_id.rsplit("-", 1)[1]) if re.search(r"-BUILD(?:-REV\d+)?-\d+$", build_id) else 1
+    if passes > MAX_BUILD_PASSES:
+        rs.set("Current Status", "Blocked")
+        rs.set("Stop Reason", f"Remediation retry limit reached ({MAX_BUILD_PASSES} Build passes)")
+    else:
+        rs.set("Current Stage", "Build")
+        rs.set("Current Run ID", build_id)
+        rs.set("Current Status", "Active")
+        rs.set("Stop Reason", "None")
+    refresh_notes(rs)
+    rs.save()
+    cmd_status(args)
+
+
+def cmd_amend(args):
+    rs = RunState()
+    require(rs, rs.status != "Complete", "a Complete task cannot be amended — create a new task")
+    seq = sequence(rs)
+    if args.stage not in seq or not BY_NAME[args.stage][3]:
+        die(f"amend target must be an agent stage in this workflow: {', '.join(s for s in seq if BY_NAME[s][3])}")
+    if seq.index(args.stage) > seq.index(rs.stage):
+        die("amend loops back — the target stage must not be after the current stage")
+    rev = rs.revision + 1
+    rs.set("Current Stage", args.stage)
+    rs.set("Current Run ID", run_id(rs, args.stage, rev))
+    rs.set("Current Status", "Active")
+    rs.set("Stop Reason", "None")
+    append_report(rs, f"Amendment REV{rev} — {today()}", f"Looped back to {args.stage}. See the task file's REV{rev} section.")
+    refresh_notes(rs)
+    rs.save()
+    cmd_status(args)
+
+
+def cmd_approve(args):
+    rs = RunState()
+    if rs.stage == "Awaiting Approval" and rs.status == HUMAN:
+        rs.add_completed(f"Awaiting Approval ({today()}) — approved by the human reviewer")
+        append_report(rs, f"Complete — {today()}", "Human reviewer approved completion.")
+        rs.set("Current Stage", "Complete")
+        rs.set("Current Status", "Complete")
+        rs.set("Stop Reason", f"None — {rs.task} closed {today()}. Awaiting a new task.")
+    elif rs.stage == "Build" and rs.status == HUMAN:
+        append_report(rs, f"Build approval — {today()}", "Approval granted to begin Build.")
+        rs.set("Current Status", "Active")
+        rs.set("Stop Reason", "None")
+    else:
+        die(f"nothing awaiting approval (current: {rs.stage}, {rs.status})")
+    refresh_notes(rs)
+    rs.save()
+    cmd_status(args)
+
+
+def cmd_block(args):
+    rs = RunState()
+    require(rs, rs.status != "Complete", "cannot block a Complete task")
+    rs.set("Current Status", "Blocked")
+    rs.set("Stop Reason", args.reason)
+    append_report(rs, f"Blocked — {today()}", args.reason)
+    refresh_notes(rs)
+    rs.save()
+    cmd_status(args)
+
+
+def cmd_resume(args):
+    rs = RunState()
+    require(rs, rs.status == "Blocked", "resume only clears a Blocked run")
+    rs.set("Current Status", HUMAN if rs.stage == "Awaiting Approval" else "Active")
+    rs.set("Stop Reason", "None")
+    append_report(rs, f"Resumed — {today()}", "Blocker cleared by the human.")
+    refresh_notes(rs)
+    rs.save()
+    cmd_status(args)
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("status").set_defaults(fn=cmd_status)
+    s = sub.add_parser("init")
+    s.add_argument("task")
+    s.add_argument("--approval-before-build", action="store_true")
+    s.add_argument("--force", action="store_true")
+    s.set_defaults(fn=cmd_init)
+    s = sub.add_parser("advance")
+    s.add_argument("--outcome")
+    s.set_defaults(fn=cmd_advance)
+    s = sub.add_parser("return-to-build")
+    s.add_argument("--reason", required=True)
+    s.set_defaults(fn=cmd_return_to_build)
+    s = sub.add_parser("amend")
+    s.add_argument("stage")
+    s.set_defaults(fn=cmd_amend)
+    sub.add_parser("approve").set_defaults(fn=cmd_approve)
+    s = sub.add_parser("block")
+    s.add_argument("--reason", required=True)
+    s.set_defaults(fn=cmd_block)
+    sub.add_parser("resume").set_defaults(fn=cmd_resume)
+    sub.add_parser("review-scope").set_defaults(fn=cmd_review_scope)
+    args = p.parse_args()
+    args.fn(args)
+
+
+if __name__ == "__main__":
+    main()
