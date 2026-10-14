@@ -25,6 +25,7 @@ export default function GalleryCarousel({
   const [announcement, setAnnouncement] = useState("");
   const triggerRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const refocusTrigger = useRef(false);
+  const focusNewTrigger = useRef(false);
   const multiple = count > 1;
 
   useEffect(() => {
@@ -33,6 +34,13 @@ export default function GalleryCarousel({
       triggerRefs.current[index]?.focus();
     }
   }, [lightboxOpen, index]);
+
+  useEffect(() => {
+    if (focusNewTrigger.current) {
+      focusNewTrigger.current = false;
+      triggerRefs.current[index]?.focus();
+    }
+  }, [index]);
 
   const goTo = (target: number): void => {
     setIndex(target);
@@ -43,11 +51,14 @@ export default function GalleryCarousel({
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>): void => {
     if (lightboxOpen || !multiple) return;
+    const onTrigger = triggerRefs.current.some((el) => el === event.target);
     if (event.key === "ArrowRight") {
       event.preventDefault();
+      focusNewTrigger.current = onTrigger;
       goTo(nextIndex(index, count));
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
+      focusNewTrigger.current = onTrigger;
       goTo(previousIndex(index, count));
     }
   };

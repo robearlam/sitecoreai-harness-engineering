@@ -131,6 +131,20 @@ describe("GalleryCarousel", () => {
     expect(screen.getByRole("img", { name: "Alt 1" })).toBeVisible();
   });
 
+  it("moves focus to the new slide's trigger after an arrow key press", async () => {
+    const user = userEvent.setup();
+    render(<GalleryCarousel items={makeItems(3)} />);
+    screen.getByRole("button", { name: /View image full size: Alt 1/ }).focus();
+    await user.keyboard("{ArrowRight}");
+    expect(
+      screen.getByRole("button", { name: /View image full size: Alt 2/ }),
+    ).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(
+      screen.getByRole("button", { name: /View image full size: Alt 3/ }),
+    ).toHaveFocus();
+  });
+
   it("announces user-initiated changes only", async () => {
     const user = userEvent.setup();
     render(<GalleryCarousel items={makeItems(3)} />);
