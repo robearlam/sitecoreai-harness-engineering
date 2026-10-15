@@ -176,6 +176,6 @@ Open questions for the Specification stage:
 
 ## Approval
 
-Reviewer:  
-Decision: Pending  
+Reviewer: Rob Earlam  
+Decision: Approved  
 Notes:
