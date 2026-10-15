@@ -4,6 +4,44 @@ Parent: "4955ed69-f207-4c7d-8f29-da2b4ffe0b3b"
 Template: "ee08d6d7-d248-4205-860e-933685d4ca4e"
 Path: "/sitecore/content/harness-engineering/harness-engineering/Data/Site Header"
 Languages:
+- Language: "de-DE"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "0d079d37-2317-40ff-ad23-0d4a2d941bf8"
+      Hint: Logo
+      Value: |
+        <image mediaid="{094AED03-02E7-4868-80CB-19926661FB77}" />
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260505T013659Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "d78694b8-34d4-4020-ade6-209512242fd8"
+    - ID: "9857f526-390f-48df-b6d1-1a97cc328e8f"
+      Hint: __Version Name
+      Value: AI translated
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "ca8c7562-1be4-4553-9526-92a748d859f7"
+      Hint: NavigationLinks
+      Value: |
+        {63E6F26C-E661-47FD-8985-7E5891E59328}
+        {7DE23142-240C-4579-A398-EF116468AD72}
+        {E507D2D2-7D76-4346-955B-DA407CC2ED35}
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054103Z
 - Language: en
   Versions:
   - Version: 1

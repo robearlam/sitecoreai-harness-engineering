@@ -4,10 +4,55 @@ Parent: "eb0da30b-171c-4147-923a-57a6e885a782"
 Template: "2aed83ac-94f4-4756-b0f7-92f7e3d91779"
 Path: "/sitecore/content/harness-engineering/harness-engineering/Data/PromoCardGrid/Cards/Promo Card 2"
 Languages:
+- Language: "de-DE"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "10b997f2-e729-4d16-accc-7986b6f9f565"
+      Hint: Image
+      Value: |
+        <image mediaid="{D51CB054-BF89-447A-8FB2-C58C6944945B}" alt="Homepage-Banner-Hintergrund" />
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260520T050449Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "6f0a8e7e-db81-4f96-b7cb-86787fa3c113"
+      Hint: Title
+      Value: Neu eingetroffen
+    - ID: "6fce33fc-1764-45f4-83b4-e5b80bf26c96"
+      Hint: Link
+      Value: |
+        <link text="" anchor="" linktype="internal" class="" title="" target="_blank" querystring="" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" />
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "55632dde-ca96-475a-96cd-a079db8206c0"
+    - ID: "94e5f100-e998-49ed-a71e-a6ca8817b72a"
+      Hint: Description
+      Value: Entdecken Sie die neueste Ergänzung unseres Produktangebots
+    - ID: "9857f526-390f-48df-b6d1-1a97cc328e8f"
+      Hint: __Version Name
+      Value: AI translated
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054116Z
 - Language: en
   Versions:
   - Version: 1
     Fields:
+    - ID: "001dd393-96c5-490b-924a-b0f25cd9efd8"
+      Hint: __Lock
+      Value: <r />
     - ID: "10b997f2-e729-4d16-accc-7986b6f9f565"
       Hint: Image
       Value: |
@@ -29,10 +74,10 @@ Languages:
     - ID: "6fce33fc-1764-45f4-83b4-e5b80bf26c96"
       Hint: Link
       Value: |
-        <link text="" anchor="" linktype="internal" class="" title="" target="_blank" querystring="" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" />
+        <link linktype="internal" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" anchor="" querystring="" target="_blank" class="" text="Read more" title=""/>
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "8e5dd884-8b9a-40b9-ac89-2b20d2de74eb"
+      Value: "26192c0a-36b9-4845-af39-b09fc4b62e71"
     - ID: "94e5f100-e998-49ed-a71e-a6ca8817b72a"
       Hint: Description
       Value: Check out the newest addition to our product lineup
@@ -42,4 +87,4 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260520T050640Z
+      Value: 20261014T003526Z

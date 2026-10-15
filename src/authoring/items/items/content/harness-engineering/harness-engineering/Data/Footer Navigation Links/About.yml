@@ -4,6 +4,38 @@ Parent: "597239a4-a97b-4e80-9e53-a4ff4e0516c7"
 Template: "79c9d7dd-b8e0-4121-8364-f78ce0f9aeec"
 Path: "/sitecore/content/harness-engineering/harness-engineering/Data/Footer Navigation Links/About"
 Languages:
+- Language: "de-DE"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260511T040512Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "f0f0f377-c80b-49b0-91c6-bef4eb443a34"
+    - ID: "9857f526-390f-48df-b6d1-1a97cc328e8f"
+      Hint: __Version Name
+      Value: AI translated
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054107Z
+    - ID: "dc66a34d-852b-4df9-851c-62879524a6e2"
+      Hint: Link
+      Value: |
+        <link class="" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" querystring="" anchor="" target="" title="" linktype="internal" text="Über" />
 - Language: en
   Versions:
   - Version: 1
@@ -21,15 +53,15 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "282ba146-a27d-44aa-93de-8e6d3c99bb73"
+      Value: "384f4ca0-c291-4db5-919a-d96dccbf2e8e"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260511T040539Z
+      Value: 20260611T083203Z
     - ID: "dc66a34d-852b-4df9-851c-62879524a6e2"
       Hint: Link
       Value: |
-        <link text="" anchor="" linktype="internal" class="" title="" target="_blank" querystring="" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" />
+        <link text="About" anchor="" linktype="internal" class="" title="" target="" querystring="" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" />

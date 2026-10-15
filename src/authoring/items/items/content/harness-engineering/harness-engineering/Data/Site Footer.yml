@@ -4,6 +4,58 @@ Parent: "4955ed69-f207-4c7d-8f29-da2b4ffe0b3b"
 Template: "d3fceaa0-2a7b-4dfc-b38d-62240be30fa9"
 Path: "/sitecore/content/harness-engineering/harness-engineering/Data/Site Footer"
 Languages:
+- Language: "de-DE"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "1b4b7965-6504-465e-86f1-70f8f2625179"
+      Hint: NavigationLinks
+      Value: |
+        {B413155F-D44A-4D0C-B6FE-CCED56CC06D5}
+        {1F405F2D-0B14-44EF-939D-D9502CEADB19}
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260511T040640Z
+    - ID: "3e1ac305-7d59-4837-950d-7726f0de9e6a"
+      Hint: TwitterLink
+      Value: |
+        <link linktype="external" url="https://x.com/Sitecore" anchor="" target="" />
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "6b1e69d2-a212-4fee-8f68-12817120840f"
+      Hint: CopyrightText
+      Value: Copyright 2026
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "846a1c51-d60b-4e75-81b4-9e7a6f7dae57"
+    - ID: "9857f526-390f-48df-b6d1-1a97cc328e8f"
+      Hint: __Version Name
+      Value: AI translated
+    - ID: "aa9d81e5-e9b3-46b3-b34b-50cdba83d16f"
+      Hint: FacebookLink
+      Value: |
+        <link linktype="external" url="https://www.facebook.com/Sitecore/" anchor="" target="" />
+    - ID: "b99b33d3-3141-4786-97a3-e0dc88d12169"
+      Hint: Logo
+      Value: |
+        <image mediaid="{094AED03-02E7-4868-80CB-19926661FB77}" />
+    - ID: "ba49b768-241a-4678-bfc4-9ecaa8592f27"
+      Hint: LinkedInLink
+      Value: |
+        <link linktype="external" url="https://www.linkedin.com/company/sitecore/" anchor="" target="" />
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054103Z
 - Language: en
   Versions:
   - Version: 1
@@ -33,7 +85,7 @@ Languages:
       Value: Copyright 2026
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "bc2b33e9-047c-4d3d-b087-d1e7b3b846e6"
+      Value: "4ca8c874-edc5-4a93-be96-f25e8a1241c6"
     - ID: "aa9d81e5-e9b3-46b3-b34b-50cdba83d16f"
       Hint: FacebookLink
       Value: |
@@ -52,4 +104,4 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260511T041129Z
+      Value: 20260520T004926Z

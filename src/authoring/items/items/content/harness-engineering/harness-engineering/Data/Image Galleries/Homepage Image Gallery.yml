@@ -1,0 +1,43 @@
+﻿---
+ID: "0130cb27-13f9-42cc-89b4-b36871aa2715"
+Parent: "f3cd7601-a95e-49bc-8db1-bb5c5225d117"
+Template: "50615aab-f8ee-461b-87c1-f84fb16213a2"
+Path: "/sitecore/content/harness-engineering/harness-engineering/Data/Image Galleries/Homepage Image Gallery"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261014T023742Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "d5c15179-568d-43c3-9efe-666ce18a03eb"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261014T023756Z
+    - ID: "f6ff1e7c-797d-4082-9f6e-ccd6af11d171"
+      Hint: Images
+      Value: |
+        {81C3A6F9-BD87-416F-8E56-88EADC5A1440}
+        {BB63BDB8-F568-405E-9277-1C474B9C0B02}
+        {CEB68304-17A9-4BE4-B51F-A43E7EAAD720}
+        {7EE76D33-4731-4E47-BAC0-CE1C2D71F0B1}
+        {643245B1-A095-4F73-A165-4D18C4F8EEB9}
+        {98251BC7-3961-45B5-8B9F-DEEAA33A5466}
+    - ID: "f93481d6-d067-4668-832d-512d023b257f"
+      Hint: Heading
+      Value: Homepage Image Gallery

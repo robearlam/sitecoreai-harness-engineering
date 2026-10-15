@@ -10,10 +10,14 @@ import {
 
 import { jsx, Fragment, jsxs } from 'react/jsx-runtime';
 import client from 'src/lib/sitecore-client';
-import { CdpHelper, useSitecore } from '@sitecore-content-sdk/nextjs';
-import { useEffect, useState } from 'react';
+import { CdpHelper, useSitecore, NextImage } from '@sitecore-content-sdk/nextjs';
+import { useEffect, useRef, useState } from 'react';
 import { pageView } from '@sitecore-content-sdk/events';
 import config from 'sitecore.config';
+import { createPortal } from 'react-dom';
+import { galleryLabels, nextIndex, previousIndex } from 'src/components/ImageGallery/galleryUtils';
+import GalleryIconButton from 'src/components/ImageGallery/galleryIconButton';
+import GalleryLightbox from 'src/components/ImageGallery/galleryLightbox';
 import HeaderLogo from 'src/components/Header/headerLogo';
 import HeaderNav from 'src/components/Header/headerNav';
 
@@ -37,12 +41,14 @@ const importMap = [
     exports: [
       { name: 'CdpHelper', value: CdpHelper },
       { name: 'useSitecore', value: useSitecore },
+      { name: 'NextImage', value: NextImage },
     ]
   },
   {
     module: 'react',
     exports: [
       { name: 'useEffect', value: useEffect },
+      { name: 'useRef', value: useRef },
       { name: 'useState', value: useState },
     ]
   },
@@ -56,6 +62,32 @@ const importMap = [
     module: 'sitecore.config',
     exports: [
       { name: 'default', value: config },
+    ]
+  },
+  {
+    module: 'react-dom',
+    exports: [
+      { name: 'createPortal', value: createPortal },
+    ]
+  },
+  {
+    module: 'src/components/ImageGallery/galleryUtils',
+    exports: [
+      { name: 'galleryLabels', value: galleryLabels },
+      { name: 'nextIndex', value: nextIndex },
+      { name: 'previousIndex', value: previousIndex },
+    ]
+  },
+  {
+    module: 'src/components/ImageGallery/galleryIconButton',
+    exports: [
+      { name: 'default', value: GalleryIconButton },
+    ]
+  },
+  {
+    module: 'src/components/ImageGallery/galleryLightbox',
+    exports: [
+      { name: 'default', value: GalleryLightbox },
     ]
   },
   {

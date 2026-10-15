@@ -9,12 +9,26 @@ SharedFields:
   Value: "headless-main"
 - ID: "dbbbeca1-21c7-4906-9dd2-493c1efa59a2"
   Hint: __Shared revision
-  Value: "ba441a4a-c1b8-4218-b5c5-ddf532bacb04"
+  Value: "31a6de04-c4b5-41e8-8031-35835bf0f4ef"
 - ID: "e391b526-d0c5-439d-803e-17512eae6222"
   Hint: Allowed Controls
   Value: |
     {FC88A1A0-3E05-4A3C-9FB1-F1408711B7CE}
     {471FCF0A-E725-48B8-ADDE-201FEFA49184}
+    {15CABDFF-FFD9-48F4-826D-A4C3D7868D3A}
+    {7A1D9A21-B8D7-42F9-9B0B-92ABF8D1974F}
+    {5F6BF7C9-C80C-4BBD-AD78-8DA749B35206}
+    {C5F905F8-FD1F-444E-A9E5-AC6B774FF0DE}
+    {2492BAC4-DA07-4C86-87F0-9873D40E2276}
+    {9C6D53E3-FE57-4638-AF7B-6D68304C7A94}
+    {3836D951-BB14-43AC-9231-649B7F245DC5}
+    {4956263D-1195-4D6E-931B-800EA625FF6F}
+    {AB2EDBA0-3960-4F12-B765-579DC231894A}
+    {62DD1639-9F28-4040-8738-C886480B2127}
+    {DDC43BE7-D77A-4CE3-9282-03DD036EEC6D}
+    {CAA0C742-F052-49FB-825B-A03494798DB7}
+    {57573AF2-9D3C-4078-AAB7-35E580E4823B}
+    {1D86CBF4-C62E-4EC2-B09C-4C2E939A2A93}
 Languages:
 - Language: en
   Versions:
@@ -33,11 +47,11 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "87d69f2c-1fc1-4ce9-abc4-fb4f06aa6b35"
+      Value: "6a87d5cb-88e4-4b49-bac7-69196c080cc7"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260520T050330Z
+      Value: 20261014T022048Z

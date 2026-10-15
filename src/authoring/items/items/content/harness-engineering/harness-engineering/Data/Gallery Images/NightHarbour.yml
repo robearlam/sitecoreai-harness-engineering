@@ -1,0 +1,30 @@
+﻿---
+ID: "643245b1-a095-4f73-a165-4d18c4f8eeb9"
+Parent: "40f80322-8af3-41e8-9865-23137e401378"
+Template: "53348246-9182-478a-89ec-c19c368517d2"
+Path: "/sitecore/content/harness-engineering/harness-engineering/Data/Gallery Images/NightHarbour"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261014T023315Z
+    - ID: "4480f970-1ed3-4479-b349-43b85994ed1f"
+      Hint: Image
+      Value: |
+        <image mediaid="{62527E0C-F441-4177-B29B-6EF96BF29D3E}" />
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "2117da9a-6215-4eb0-8b48-dbef174a9ff9"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261014T023337Z
+    - ID: "e37cfeee-4b0c-4ba7-87ac-ca3f8cc176ab"
+      Hint: Caption
+      Value: Night Harbour

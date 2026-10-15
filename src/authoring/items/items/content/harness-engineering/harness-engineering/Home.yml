@@ -13,7 +13,14 @@ SharedFields:
   Hint: __Originator
   Value: "{F558BEC9-C602-4D7A-B9A1-D0411C946EA4}"
 Languages:
-- Language: en
+- Language: "de-DE"
+  Fields:
+  - ID: "30e85e5d-e00a-4864-b358-7624d511deb4"
+    Hint: __Unversioned revision
+    Value: "3d6c951c-1a80-43bc-bb31-5be163a19c1b"
+  - ID: "b5e02ad9-d56f-4c41-a065-a133db87bdeb"
+    Hint: __Display name
+    Value: 
   Versions:
   - Version: 1
     Fields:
@@ -59,7 +66,74 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "62b1e752-de7b-40ba-bf17-982305aa7787"
+      Value: "1f5ccc6b-0e30-4bab-83cf-4667714bee28"
+    - ID: "9857f526-390f-48df-b6d1-1a97cc328e8f"
+      Hint: __Version Name
+      Value: AI translated
+    - ID: "992c7ee4-72c4-4ef7-97ac-39afd506e4c9"
+      Hint: Title
+      Value: Startseite
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054059Z
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "001dd393-96c5-490b-924a-b0f25cd9efd8"
+      Hint: __Lock
+      Value: <r />
+    - ID: "04bf00db-f5fb-41f7-8ab7-22408372a981"
+      Hint: __Final Renderings
+      Value: |
+        <r xmlns:p="p" xmlns:s="s"
+          p:p="1">
+          <d
+            id="{FE5D7FDF-89C0-4D99-9AA3-B5FBD009C9F3}">
+            <r
+              uid="{067355F5-EE15-4FDA-9B5B-DE31A2A7E7B1}"
+              p:before="*"
+              s:ds="6ecc90f1-c4fc-4f84-855a-8c94de6be176"
+              s:id="{FC88A1A0-3E05-4A3C-9FB1-F1408711B7CE}"
+              s:par="GridParameters=%7B7465D855-992E-4DC2-9855-A03250DFA74B%7D&amp;FieldNames&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=1"
+              s:ph="headless-main" />
+            <r
+              uid="{E86037F3-BF28-45E3-91CB-8B1A26575A8B}"
+              p:after="r[@uid='{067355F5-EE15-4FDA-9B5B-DE31A2A7E7B1}']"
+              s:ds="0130cb27-13f9-42cc-89b4-b36871aa2715"
+              s:id="{1D86CBF4-C62E-4EC2-B09C-4C2E939A2A93}"
+              s:par="GridParameters=%7B7465D855-992E-4DC2-9855-A03250DFA74B%7D&amp;FieldNames&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=3&amp;Include in schema"
+              s:ph="headless-main" />
+            <r
+              uid="{687A79D3-49D2-4B68-A3A6-CC78079CF5E9}"
+              p:after="*[1=2]"
+              s:ds="e650bccf-9790-4484-b554-05b8447eff8d"
+              s:id="{471FCF0A-E725-48B8-ADDE-201FEFA49184}"
+              s:par="GridParameters=%7B7465D855-992E-4DC2-9855-A03250DFA74B%7D&amp;FieldNames&amp;Styles&amp;RenderingIdentifier&amp;CSSStyles&amp;DynamicPlaceholderId=2"
+              s:ph="headless-main" />
+          </d>
+        </r>
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260413T044311Z
+    - ID: "4e0720e9-9d50-4ddc-87cf-ecd65e8e94c8"
+      Hint: NavigationTitle
+      Value: "harness-engineering"
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "e489cdbe-898f-4299-ae3c-50471c20499b"
     - ID: "992c7ee4-72c4-4ef7-97ac-39afd506e4c9"
       Hint: Title
       Value: Home
@@ -69,4 +143,4 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260520T050912Z
+      Value: 20261014T030758Z
