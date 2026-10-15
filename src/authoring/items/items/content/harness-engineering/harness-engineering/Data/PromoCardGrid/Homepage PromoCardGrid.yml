@@ -4,6 +4,37 @@ Parent: "3132d59d-8927-487c-8e51-6f1c78e96f52"
 Template: "30a52a62-def5-404c-9f49-faef3887db17"
 Path: "/sitecore/content/harness-engineering/harness-engineering/Data/PromoCardGrid/Homepage PromoCardGrid"
 Languages:
+- Language: "de-DE"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "0abb4b33-f739-44b4-a4bc-4d8b2d47944d"
+      Hint: Cards
+      Value: |
+        {8C0A2FB3-3A42-41BB-9AEB-B8E0B653FF47}
+        {4B11CA9C-9588-41C2-95BE-F82639ED82D1}
+        {4A0D9F25-ED83-4AF0-9A1C-4E3E4B793BF5}
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260520T050731Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "919e4022-9755-4f00-8411-33a5a2509113"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054107Z
 - Language: en
   Versions:
   - Version: 1

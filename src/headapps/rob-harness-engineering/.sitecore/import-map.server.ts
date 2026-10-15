@@ -10,12 +10,14 @@ import {
 import { jsx, jsxs } from 'react/jsx-runtime';
 import React from 'react';
 import componentMap from '.sitecore/component-map';
-import { AppPlaceholder, Link, Image } from '@sitecore-content-sdk/nextjs';
+import { AppPlaceholder, Link, Image, NextImage, Text } from '@sitecore-content-sdk/nextjs';
 import NextLink from 'next/link';
 import FooterLogo from 'src/components/SiteFooter/footerLogo';
 import FooterNav from 'src/components/SiteFooter/footerNav';
 import FooterSocialLinks from 'src/components/SiteFooter/footerSocialLinks';
 import PromoCard from 'src/components/PromoCardGrid/promoCard';
+import GalleryEditingList from 'src/components/ImageGallery/galleryEditingList';
+import GalleryCarousel from 'src/components/ImageGallery/galleryCarousel';
 
 const importMap = [
   {
@@ -43,6 +45,8 @@ const importMap = [
       { name: 'AppPlaceholder', value: AppPlaceholder },
       { name: 'Link', value: Link },
       { name: 'Image', value: Image },
+      { name: 'NextImage', value: NextImage },
+      { name: 'Text', value: Text },
     ]
   },
   {
@@ -73,6 +77,18 @@ const importMap = [
     module: 'src/components/PromoCardGrid/promoCard',
     exports: [
       { name: 'default', value: PromoCard },
+    ]
+  },
+  {
+    module: 'src/components/ImageGallery/galleryEditingList',
+    exports: [
+      { name: 'default', value: GalleryEditingList },
+    ]
+  },
+  {
+    module: 'src/components/ImageGallery/galleryCarousel',
+    exports: [
+      { name: 'default', value: GalleryCarousel },
     ]
   }
 ] as ImportEntry[];

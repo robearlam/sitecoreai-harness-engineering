@@ -11,14 +11,14 @@ SharedFields:
   Hint: __Shared revision
   Value: "faa1472c-81e3-4302-ad71-9ba158b1654b"
 Languages:
-- Language: en
+- Language: "de-DE"
   Versions:
   - Version: 1
     Fields:
     - ID: "02687952-e923-46ff-943e-e0ac45ed14ff"
       Hint: Link
       Value: |
-        <link text="" anchor="" linktype="internal" class="" title="" target="_blank" querystring="" id="{82ECCF36-84C4-452B-9844-A2D01E6056CC}" />
+        <link class="" id="{82ECCF36-84C4-452B-9844-A2D01E6056CC}" querystring="" anchor="" target="" title="" linktype="internal" text="Startseite" />
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
       Value: 20260505T013515Z
@@ -32,11 +32,43 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "449da330-97e4-47a2-a3ca-19cf29b1e9fe"
+      Value: "2ff50002-4c31-45aa-a3c8-20b7f826cb7a"
+    - ID: "9857f526-390f-48df-b6d1-1a97cc328e8f"
+      Hint: __Version Name
+      Value: AI translated
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260505T013620Z
+      Value: 20260617T054107Z
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "02687952-e923-46ff-943e-e0ac45ed14ff"
+      Hint: Link
+      Value: |
+        <link text="Home" anchor="" linktype="internal" class="" title="" target="" querystring="" id="{82ECCF36-84C4-452B-9844-A2D01E6056CC}" />
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260505T013515Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "1030ef63-f97b-4698-8189-0842b638f9b5"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260611T044032Z

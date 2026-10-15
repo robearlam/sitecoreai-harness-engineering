@@ -14,13 +14,39 @@ SharedFields:
     {3836D951-BB14-43AC-9231-649B7F245DC5}
     {FC88A1A0-3E05-4A3C-9FB1-F1408711B7CE}
     {471FCF0A-E725-48B8-ADDE-201FEFA49184}
+    {1D86CBF4-C62E-4EC2-B09C-4C2E939A2A93}
 - ID: "dbbbeca1-21c7-4906-9dd2-493c1efa59a2"
   Hint: __Shared revision
-  Value: "8ca6ab18-465f-4b47-ad1d-e65e69fc397b"
+  Value: "a279e806-84ee-402b-a4a3-c53d9f82c347"
 - ID: "f6d8a61c-2f84-4401-bd24-52d2068172bc"
   Hint: __Originator
   Value: "{EDD5B21F-2BD2-4290-81A2-68428363D312}"
 Languages:
+- Language: "de-DE"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260413T044337Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "b39b5e28-2f77-47ef-ab2f-7d007c1c9a58"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054108Z
 - Language: en
   Versions:
   - Version: 1
@@ -38,11 +64,11 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "96808013-deed-44fb-951c-c4de7c45b064"
+      Value: "9dc21dd6-cd8e-4aca-8c6a-b8d5001dee8c"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260520T050413Z
+      Value: 20261014T022142Z

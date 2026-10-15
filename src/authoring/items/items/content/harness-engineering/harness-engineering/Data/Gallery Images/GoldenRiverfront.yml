@@ -1,0 +1,30 @@
+﻿---
+ID: "bb63bdb8-f568-405e-9277-1c474b9c0b02"
+Parent: "40f80322-8af3-41e8-9865-23137e401378"
+Template: "53348246-9182-478a-89ec-c19c368517d2"
+Path: "/sitecore/content/harness-engineering/harness-engineering/Data/Gallery Images/GoldenRiverfront"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261014T023534Z
+    - ID: "4480f970-1ed3-4479-b349-43b85994ed1f"
+      Hint: Image
+      Value: |
+        <image mediaid="{BB370606-1B05-4430-A59F-03614FFF810A}" />
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "3d978cff-ef0a-48e8-bd96-9af21714d631"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261014T023546Z
+    - ID: "e37cfeee-4b0c-4ba7-87ac-ca3f8cc176ab"
+      Hint: Caption
+      Value: Golden Riverfront

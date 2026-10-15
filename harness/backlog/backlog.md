@@ -52,7 +52,7 @@ Suggested status values:
 ---
 
 ### B006 — Promo Card Grid
-**Status:** Planned  
+**Status:** Done  
 **Summary:** Create a promo card component and a card grid container component. The grid renders multiple authored promo cards (image, title, description, link) from a nested placeholder or multi-value field. Should be responsive across breakpoints.
 
 ---
@@ -82,8 +82,9 @@ Suggested status values:
 ---
 
 ### B011 — Image Gallery Component
-**Status:** Deferred  
-**Summary:** Create a responsive image gallery rendering that displays multiple authored images in a grid or carousel layout. Should use the Sitecore Image field and Next.js Image optimisation. Deferred pending design direction.
+**Status:** Ready for Spec  
+**Summary:** Create a responsive image gallery rendering that displays multiple authored images in a grid or carousel layout. Should use the Sitecore Image field and Next.js Image optimisation. Design direction resolved 2026-10-14: carousel with lightbox (no grid).  
+**Selected as T006**
 
 ---
 

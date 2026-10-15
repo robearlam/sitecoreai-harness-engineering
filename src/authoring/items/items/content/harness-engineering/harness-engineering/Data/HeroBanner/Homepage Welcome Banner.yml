@@ -4,10 +4,61 @@ Parent: "9cb5aad2-dbf6-49bd-a60b-ed2f1d9ee09d"
 Template: "fb08e468-8abb-4a76-bbf8-708ba238e7ce"
 Path: "/sitecore/content/harness-engineering/harness-engineering/Data/HeroBanner/Homepage Welcome Banner"
 Languages:
+- Language: "de-DE"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "001dd393-96c5-490b-924a-b0f25cd9efd8"
+      Hint: __Lock
+      Value: <r />
+    - ID: "259d7d3b-e47f-42a4-9d94-07cd7b159463"
+      Hint: Heading
+      Value: Willkommen bei Harness Engineering
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20260520T010453Z
+    - ID: "386cc808-b70a-43fb-995c-adb87c3329dd"
+      Hint: CTALink
+      Value: |
+        <link text="" anchor="" linktype="internal" class="" title="" target="_blank" querystring="" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" />
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "df327755-4a9f-4770-a6ce-485bc2874b18"
+    - ID: "9857f526-390f-48df-b6d1-1a97cc328e8f"
+      Hint: __Version Name
+      Value: AI translated
+    - ID: "af65dd37-4e2b-43b0-bcaf-41fb7165499c"
+      Hint: OverlayOpacity
+      Value: "{E82C1713-CA1B-4257-8D11-9E1E91EBE90E}"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20260617T054107Z
+    - ID: "dbbc20fe-4bb1-4739-a3c7-ecf89f7463bf"
+      Hint: Subheading
+      Value: Die Zukunft digitaler Erlebnisse gestalten
+    - ID: "f4b294ee-f9c9-4398-9cea-5370f7a61441"
+      Hint: BackgroundImage
+      Value: |
+        <image mediaid="{D51CB054-BF89-447A-8FB2-C58C6944945B}" alt="Homepage-banner-background" />
 - Language: en
   Versions:
   - Version: 1
     Fields:
+    - ID: "001dd393-96c5-490b-924a-b0f25cd9efd8"
+      Hint: __Lock
+      Value: <r />
     - ID: "259d7d3b-e47f-42a4-9d94-07cd7b159463"
       Hint: Heading
       Value: Welcome to Harness Engineering
@@ -17,17 +68,17 @@ Languages:
     - ID: "386cc808-b70a-43fb-995c-adb87c3329dd"
       Hint: CTALink
       Value: |
-        <link text="" anchor="" linktype="internal" class="" title="" target="_blank" querystring="" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" />
+        <link linktype="internal" id="{19976B65-2DE0-4734-86D4-F6D03BAA4DA6}" anchor="" querystring="" target="_blank" class="" text="About" title=""/>
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "76d95358-fce2-43eb-917f-86d648c705fe"
+      Value: "fb0b52d2-60e5-4409-a2aa-19115e0b5801"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20260520T011350Z
+      Value: 20261014T003508Z
     - ID: "dbbc20fe-4bb1-4739-a3c7-ecf89f7463bf"
       Hint: Subheading
       Value: Building the future of digital experiences
