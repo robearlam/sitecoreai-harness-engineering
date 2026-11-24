@@ -44,6 +44,14 @@ Outcome: implemented and committed fc43716; lint + 112 tests pass; production bu
 
 Outcome: Pass With Minor Issues; no blocking issues; 5 non-blocking findings; pre-existing lint-glob gap recorded. `verify-stage.sh qa` passed.
 
+### CMS Configuration — RUN-2026-11-24-T007-CMS — 2026-11-24
+
+Outcome: Complete: 25 logged writes, all items in Feature/harness-engineering via create_component; layout JSON verified; ser pull + icon check + deployed render check are Manual Steps. `verify-stage.sh cms` passed.
+
+### Complete — 2026-11-24
+
+Human reviewer approved completion.
+
 ---
 
 ## Artifact Paths
@@ -134,3 +142,16 @@ QA verdict: **Pass With Minor Issues**. Candidate follow-up: "CTA Banner polish"
 **Pre-existing tooling finding (not T007):** `npm run lint` never checks component files. npm's `sh` doesn't expand `**` in the script's glob `./src/**/*.tsx ./src/**/*.ts`, so it matches only `src/*/*.ts(x)` (9 files). "Lint clean", in this run and earlier ones, didn't cover `CallToActionBanner/`. CI uses the same script. `package.json` also lacks the `type-check` script that AGENTS.md and the plan name. Candidate tooling task.
 
 Comparison with the first attempt: QA's earlier non-blocking findings (content left-aligned, no focus ring on body links, no width cap on stacked buttons, `hasRichText` treating media-only bodies as empty) did **not** recur. The design note specified centring, focus treatment, and stacking without being prompted.
+
+### CMS Configuration — orchestrator check (2026-11-24)
+
+Confirmed independently: commit `f6f099e`; `verify-stage.sh cms` passes with the record matching 25 logged writes, all by `cms-config` in this run. Status: **Complete**. Read-only: `Renderings/Feature/harness-engineering` holds only the `CallToActionBanner` Json Rendering (`componentName` `CallToActionBanner`, Datasource Template in Feature, its own Rendering Parameters template). `templates/Feature/harness-engineering` holds exactly the datasource, folder, parameters, and option templates. No stray items; nothing went into the Project layer.
+
+**D-005 findings from the first real run** (for the next harness change):
+
+1. **`create_component` without `modelId` also creates an empty datasource template**, `templates/Feature/harness-engineering/<Name>`, already linked as the rendering's Datasource Template, plus the folder template, datasource folder, parameters template, and Available Renderings entry, all in one call. The agent rightly reused it and added fields with `update_content_type`, instead of creating a second template. D-005's order (create_component, then `create_content_type` for the datasource template, then `update_component`) should become: create_component, then add fields to the template it created. `update_component` with `modelId` stays untested and is no longer needed.
+2. `add_component_on_page` returns the rendering ID as `componentId`, not the instance uid. `set_component_datasource` needs the uid from `get_components_on_page`. Worth adding to the agent's shared-datasource rule.
+3. The `create_component` default Datasource Location filters by `@@templatename='<Name> Folder'`, which doesn't match the agent's own `@@templateid` preference. It was left unchanged, as the rules say.
+4. One unintended no-op `update_content_type` (row 5) was correctly recorded as an Updated row. The record-vs-log check would have failed if it had been left out.
+
+Sample banners are on a new `Home/T007-cms-check` page, not on Home. Layout JSON confirms `BackgroundColour` arrives as a resolved item with `fields.Value.value` = `primary`, as the component expects.
