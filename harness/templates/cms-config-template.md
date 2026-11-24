@@ -63,11 +63,12 @@ This table must match the write log the guard hook keeps at `harness/runs/{{TASK
 
 ### Items create_component produced
 
-Every item `create_component` produced besides the rendering, read back after the call (and again after linking the datasource template). These are used as they are, never deleted or rebuilt. Only the rendering is in the write log. The rest are listed here and in Rollback.
+Every item `create_component` produced besides the rendering, read back after the call. These are built on, never deleted, moved, or rebuilt. The only changes the agent makes to them are the ones its definition allows (fields on the datasource template, `__Masters`, and icons), and those appear as Updated rows in Changes Applied. Only the rendering is logged as created. The rest are listed here and in Rollback.
 
 | Item | Path | Item ID | Where expected ("Where items go" in the agent definition)? |
 |---|---|---|---|
 | Category folder (first use only) | `/sitecore/layout/Renderings/Feature/harness-engineering` | `{id}` | ✅ / ❌ |
+| Datasource template (fields added by this run) | `/sitecore/templates/Feature/harness-engineering/{Name}` | `{id}` | ✅ / ❌ |
 | Rendering Parameters template | `/sitecore/templates/Feature/harness-engineering/{Name} Rendering Parameters` | `{id}` | ✅ / ❌ |
 | `{Name} Folder` template | `/sitecore/templates/Feature/harness-engineering/{Name} Folder` | `{id}` | ✅ / ❌ |
 | Datasource folder | `/sitecore/content/harness-engineering/harness-engineering/Data/{Name} Folder` | `{id}` | ✅ / ❌ |
