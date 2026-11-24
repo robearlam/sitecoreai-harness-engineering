@@ -113,6 +113,8 @@ Setup, once per machine:
 1. Start Claude Code in the repo and approve the two project MCP servers when asked.
 2. Run `/mcp` and sign in to each server. When asked for an organization and tenant, choose the **same non-production** tenant for both.
 
+New components are created with `create_component`, which puts the rendering and its templates in the **Feature** layer (`Renderings/Feature/harness-engineering`, `templates/Feature/harness-engineering`). The CMS agent builds on what it produces rather than moving it (see `decisions.md`, D-005). T001–T006 are still in the Project layer.
+
 The repo cannot choose the environment: each server uses whichever tenant you signed in to. Before any write, the CMS agent checks that both servers list the `harness-engineering` site with the same ID, and stops if they don't.
 - **Hooks** in `.claude/hooks/` load the live run-state at session start and verify each stage's artifact when its agent finishes. A failed verification sends the agent back once to repair it. `cms-mcp-guard.py` runs on every Sitecore MCP call: it denies writes unless run-state shows the CMS Configuration stage Active, denies deleting anything the current run didn't create, and logs each write to `runs/TASKID-cms-writes.jsonl`, which `verify-stage.sh` checks against the CMS record.
 

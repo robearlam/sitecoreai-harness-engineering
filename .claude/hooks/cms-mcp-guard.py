@@ -52,8 +52,11 @@ DELETE_TOOL = MKT + "delete_content"
 
 # Input keys that name an existing item the call changes. On sc-marketer page
 # tools, componentId is a component instance on the page, not an item, so it
-# counts only for sc-developer (where it is the rendering item).
-TOUCHED_INPUT_KEYS = ("itemId", "modelId", "pageId")
+# counts only for sc-developer (where it is the rendering item). modelId is the
+# changed item only for update_content_type; on create_component it just links
+# the rendering to an existing template, which is not a write to the template.
+TOUCHED_INPUT_KEYS = ("itemId", "pageId")
+MODEL_TARGET_TOOLS = {DEV + "update_content_type"}
 # Response key holding the new item's ID, per create tool.
 CREATED_RESPONSE_KEY = {
     DEV + "create_content_type": "id",
@@ -166,6 +169,8 @@ def post(event, state):
             touched.append(norm(tool_input[key]))
     if tool.startswith(DEV) and tool_input.get("componentId"):
         touched.append(norm(tool_input["componentId"]))
+    if tool in MODEL_TARGET_TOOLS and tool_input.get("modelId"):
+        touched.append(norm(tool_input["modelId"]))
     key = CREATED_RESPONSE_KEY.get(tool)
     if key:
         for obj in response_objects(response):

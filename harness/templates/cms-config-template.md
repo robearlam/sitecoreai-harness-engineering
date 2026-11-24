@@ -61,13 +61,17 @@ This table must match the write log the guard hook keeps at `harness/runs/{{TASK
 |---|---|---|---|---|---|---|---|
 | 1 | Created / Updated / Existed / Deleted | {Name} | {Data template / JSON Rendering / Placeholder Settings / Folder / Datasource / Page / Partial Design / Page Design} | `{path}` | `{id}` | `{mcp tool}` | ✅ / ❌ |
 
-### Items created automatically
+### Items create_component produced
 
-Items `create_component` created as side effects (Rendering Parameters template, `<Name> Folder` template, Available Renderings collection), with their paths.
+Every item `create_component` produced besides the rendering, read back after the call (and again after linking the datasource template). These are used as they are, never deleted or rebuilt. Only the rendering is in the write log. The rest are listed here and in Rollback.
 
-| Item | Path | Item ID | Inside `Project/harness-engineering`? |
+| Item | Path | Item ID | Where expected ("Where items go" in the agent definition)? |
 |---|---|---|---|
-| {Name} | `{path}` | `{id}` | ✅ / ❌ |
+| Category folder (first use only) | `/sitecore/layout/Renderings/Feature/harness-engineering` | `{id}` | ✅ / ❌ |
+| Rendering Parameters template | `/sitecore/templates/Feature/harness-engineering/{Name} Rendering Parameters` | `{id}` | ✅ / ❌ |
+| `{Name} Folder` template | `/sitecore/templates/Feature/harness-engineering/{Name} Folder` | `{id}` | ✅ / ❌ |
+| Datasource folder | `/sitecore/content/harness-engineering/harness-engineering/Data/{Name} Folder` | `{id}` | ✅ / ❌ |
+| Available Renderings collection | `.../Presentation/Available Renderings/harness-engineering` | `{id}` | ✅ / ❌ |
 
 ---
 
@@ -77,11 +81,13 @@ The configuration as read back from the CMS after the run.
 
 ### Datasource Template: {TemplateName}
 
+Path: `/sitecore/templates/Feature/harness-engineering/{TemplateName}` · Icon: `{Office/32x32/icon.png}` (set — not verifiable by read-back)
+
 | Field Name | Field Type | Source | Standard Value | Notes |
 |---|---|---|---|---|
 | {fieldName} | {Field Type} | `{source query}` | {value} | |
 
-*(Repeat for each supporting template.)*
+*(Repeat for each supporting and option template, with its path and icon.)*
 
 ### Rendering: {ComponentName}
 
@@ -89,8 +95,9 @@ The configuration as read back from the CMS after the run.
 |---|---|
 | componentName | `{ComponentName}` — matches the component map key |
 | Datasource Template | `{path}` |
-| Datasource Location | `{query}` |
+| Datasource Location | `{query}` (the `create_component` default) |
 | Parameters Template | `{path}` |
+| Icon | `{Office/32x32/icon.png}` — read back with `get_component` |
 
 ---
 
@@ -101,8 +108,10 @@ The configuration as read back from the CMS after the run.
 | Every change read back matches intent | `get_content_item_by_id` / `get_content_type` / `get_component` | ✅ / ❌ |
 | Component allowed in `{placeholder}` on `{page}` | `get_allowed_comps_by_ph` | ✅ / ❌ |
 | Component resolves its datasource on `{page}` | `get_components_on_page` | ✅ / ❌ |
+| Layout data gives the component every field it reads, with reference fields in the shape its types expect | `get_page_html` layout JSON — quote the reference-field shapes | ✅ / ❌ |
 | `componentName` matches the component map key | rendering read-back vs. source | ✅ / ❌ |
-| Component renders on `{page}` | `get_page_screenshot` — describe what it shows | ✅ / ❌ / Not deployed — not verifiable |
+| Rendering icon is the one set | `get_component` | ✅ / ❌ |
+| Component renders on `{page}` | layout JSON / optional screenshot | ✅ / ❌ / Not deployed — not verifiable |
 
 ---
 
@@ -112,8 +121,8 @@ Every path created or changed, checked against `src/authoring/items/*.module.jso
 
 | Required Path | Module Include Name | Status |
 |---|---|---|
-| `/sitecore/templates/Project/harness-engineering/` | `templates` | Covered / Added / ❌ |
-| `/sitecore/layout/Renderings/Project/harness-engineering/` | `renderings` | Covered / Added / ❌ |
+| `/sitecore/templates/Feature/harness-engineering/` | `feature-templates` | Covered / Added / ❌ |
+| `/sitecore/layout/Renderings/Feature/harness-engineering/` | `feature-renderings` | Covered / Added / ❌ |
 | `/sitecore/layout/Placeholder Settings/Project/harness-engineering` | `placeholder-settings` | Covered / Added / ❌ |
 | `/sitecore/content/harness-engineering/` | `content` | Covered / Added / ❌ |
 | `/sitecore/media library/Project/harness-engineering` | `media` | Covered / Added / ❌ |
@@ -133,7 +142,8 @@ What the human still has to do, in order. Always ends with the serialization pul
    dotnet sitecore ser pull
    ```
 
-5. Commit them:
+5. Check the pulled `.yml` files: each template icon listed in Field Configuration appears as `__Icon`, and the `{Name} Folder` standard values have `__Masters`. These standard fields can't be read back through the MCP.
+6. Commit them:
 
    ```bash
    git add src/authoring/items/

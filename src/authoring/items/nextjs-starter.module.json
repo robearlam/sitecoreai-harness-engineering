@@ -24,6 +24,16 @@
                 "allowedPushOperations": "CreateUpdateAndDelete"
             },
             {
+                "name": "feature-renderings",
+                "path": "/sitecore/layout/Renderings/Feature/harness-engineering",
+                "allowedPushOperations": "CreateUpdateAndDelete"
+            },
+            {
+                "name": "feature-templates",
+                "path": "/sitecore/templates/Feature/harness-engineering",
+                "allowedPushOperations": "CreateUpdateAndDelete"
+            },
+            {
                 "name": "media",
                 "path": "/sitecore/media library/Project/harness-engineering",
                 "allowedPushOperations": "CreateUpdateAndDelete"

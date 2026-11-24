@@ -105,7 +105,7 @@ Why the harness looks the way it does. Each entry records what was chosen, why, 
 **Known limits:**
 
 - Both servers are new — the Developer MCP is in beta — and responses vary between runs. Every write is read back for that reason.
-- Creating a component with a new category puts the rendering, a Rendering Parameters template, and a `<Name> Folder` template under `Feature/`, outside our serialization includes. The agent must reuse an existing category under `Project/harness-engineering`, and escalates if there is none. Where the side-effect templates land when an existing Project category is reused has not been tested yet; the agent reads them back and escalates if they land outside `Project/harness-engineering`.
+- Creating a component with a new category puts the rendering, a Rendering Parameters template, and a `<Name> Folder` template under `Feature/`, outside our serialization includes. ~~The agent must reuse an existing category under `Project/harness-engineering`.~~ **Superseded by D-005:** `create_component` always uses the Feature layer, and the harness now follows it.
 - Because writes don't prompt, a bad run can make many wrong writes before the human sees them. The guard confines them to the CMS stage and to the tenant that passed the environment check, the log makes every one visible, and the Rollback list undoes them (deleted items go to the recycle bin).
 - The guard can't tell which item an update targets by path; only the item ID is in the call. Updates are limited by stage, not by location, and the record's Rollback list gives the previous value of every field changed on an existing item.
 - Items get new IDs in whichever environment the agent writes to. Other environments still get them through `ser pull`, commit, and the existing push and deploy process.
@@ -119,3 +119,39 @@ Why the harness looks the way it does. Each entry records what was chosen, why, 
 - **Wildcard permission rules per server.** Listing tools explicitly means a tool the servers add later is not silently allowed.
 
 **When to revisit:** If a run makes writes the human didn't expect, add a pause before the CMS stage that shows the planned item list (like `--approval-before-build`). Also revisit when the MCP servers add media upload or a delete tool on the Developer side, or leave beta.
+
+---
+
+## D-005: The CMS stage builds on `create_component` and follows it into the Feature layer
+
+**What we chose (2026-11-24):** The CMS Configuration agent uses the Sitecore Developer MCP's `create_component` as the way to create a component, and builds on every item it produces instead of rebuilding or relocating them. It accepts where they land, which is the **Feature** layer, in a folder named after the category.
+
+1. **One category, in Feature.** Every new component uses the category `harness-engineering`. `create_component` creates it on first use at `/sitecore/layout/Renderings/Feature/harness-engineering`, and the agent reuses it by ID after that. The agent never passes the Project rendering folder, which the Components API also lists as a category called `harness-engineering`.
+2. **Use what it produces.** The rendering, Rendering Parameters template, `<Name> Folder` template, `Data/<Name> Folder` datasource folder, default Datasource Location, and Available Renderings collection are used as they are. The agent adds only what `create_component` doesn't: our content types, standard values, insert options, option and datasource items, placeholder Allowed Controls, and sample content. The one sanctioned correction is the rendering's `Datasource Template` field, if linking the template with `update_component` doesn't set it.
+3. **Our templates go in Feature too.** Datasource, supporting, and option templates are created in `/sitecore/templates/Feature/harness-engineering`, always with `parentId`, so everything for a component lives in one place. The order is: `create_component` (without `modelId`), then the templates, then `update_component` to link them.
+4. **Icons.** The rendering gets a fitting icon through `iconUrl` (read back with `get_component`). Our templates get `__Icon`, following the conventions in the serialized items. `__Icon` can't be read back through the MCP, so the human checks it in the `.yml` after `ser pull`.
+5. **Verification by layout data.** The agent checks the page through the layout JSON embedded in `get_page_html`, which shows exactly what each component receives. Screenshots are optional.
+6. **Stop on rule conflicts.** If a rule can't be followed, the agent escalates. It never works around a rule, and never deletes or rebuilds what the platform created.
+7. **Serialization** gains `feature-renderings` and `feature-templates` includes for the two Feature paths.
+8. **Guard fix.** `modelId` counts as a write to the template only for `update_content_type`. On `create_component` and `update_component` it only links the rendering to the template.
+
+**Why:**
+
+- **T007's first CMS run (2026-11-24).** Given the Project rendering folder as its category, `create_component` created `Feature/harness-engineering` and put the rendering, parameters template, folder template, a `Data/… Folder` item, and an Available Renderings collection there. Following D-004's rule to keep everything in Project, the agent deleted the rendering and rebuilt it by hand in Project. That orphaned six items that only the human could delete, because the guard rightly refuses to delete items the run didn't log as created. A datasource folder sat empty next to the one in use, and the new items had default icons.
+- **Probe T900 (same day).** Given a category that was a subfolder of the Project rendering folder, `create_component` ignored the folder ID and created `Feature/<category name>` again. The Components API never lists a Project subfolder as a category. So placement is fixed and predictable: Feature, by category name. `iconUrl` set the rendering's icon and read back. `__Icon` on a template appeared to save (the `updated` timestamp moved) but can't be read back.
+- **Fighting the tool cost more than it saved.** Every workaround broke the link between what the platform created and what the harness tracked. Following the tool keeps every item where the MCP and the authoring tools expect it, and future MCP improvements apply without harness changes.
+- **The Droplink question settled itself.** T007's run also showed that `get_components_on_page` returns raw stored values (a Droplink as a bare GUID), while the layout JSON in `get_page_html` shows what the component really receives (a resolved item with its fields). That's why the layout JSON is now the primary check.
+
+**Known limits:**
+
+- Untested: whether `create_component` without `modelId` already creates the `<Name> Folder` template and datasource folder, and whether `update_component` with `modelId` sets the rendering's Datasource Template. The agent checks both and escalates rather than filling the gap itself. The T007 re-run will show which.
+- Items `create_component` produces besides the rendering aren't in its response, so the guard doesn't log them as created. The record lists them, and undoing a run means the human deletes them.
+- T001–T006 live in the Project layer, and new components live in Feature until a separate tidy-up task moves the old ones.
+- `__Icon` and `__Masters` are checked only after `ser pull`.
+
+**What we rejected:**
+
+- **Building the rendering ourselves with `create_content_item`** (the first proposal after T007's run). It works, but it duplicates platform logic that will drift as the MCP changes. We'd own the parameters template, folder, Datasource Location, and availability wiring. And it fights the direction of the Sitecore Developer MCP.
+- **Keeping our templates in Project while `create_component`'s are in Feature.** It works (tested), but each component would be split across two layers.
+
+**When to revisit:** after the T007 re-run, to settle the two untested behaviours; when the existing components move to Feature; or if `create_component` gains a way to choose the parent folder.
