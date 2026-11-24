@@ -1,0 +1,37 @@
+﻿---
+ID: "2359cbd5-6f38-4002-8f38-e6feb31ee46a"
+Parent: "15876813-5b53-41b6-9e93-ad6c63785dd6"
+Template: "97e7fc0a-2f52-44db-aca2-7d7e42c26db4"
+Path: "/sitecore/content/harness-engineering/harness-engineering/Data/CallToActionBanner Folder/Banner C Default"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "1004aabb-a716-4de6-aeb2-3186eb0c13d0"
+      Hint: PrimaryAction
+      Value: |
+        <link text="Subscribe" linktype="external" url="https://www.sitecore.com" anchor="" target="" />
+    - ID: "1089de90-75b1-4391-8e52-a47a3193dfd1"
+      Hint: Heading
+      Value: Stay in the loop
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261124T023527Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "0d19fd80-ef00-4a8f-be43-8efeccaccc1b"
+    - ID: "9d31d012-f467-42fc-bd05-e867306a8b62"
+      Hint: Body
+      Value: <p>Get product news and updates in your inbox.</p>
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261124T023528Z

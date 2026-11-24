@@ -7,10 +7,11 @@ import {
 } from '@sitecore-content-sdk/nextjs/codegen';
 // end of built-in imports
 
-import { jsx, jsxs } from 'react/jsx-runtime';
+import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
+import { useId } from 'react';
 import React from 'react';
 import componentMap from '.sitecore/component-map';
-import { AppPlaceholder, Link, Image, NextImage, Text } from '@sitecore-content-sdk/nextjs';
+import { AppPlaceholder, Link, Image, NextImage, Text, RichText } from '@sitecore-content-sdk/nextjs';
 import NextLink from 'next/link';
 import FooterLogo from 'src/components/SiteFooter/footerLogo';
 import FooterNav from 'src/components/SiteFooter/footerNav';
@@ -18,6 +19,7 @@ import FooterSocialLinks from 'src/components/SiteFooter/footerSocialLinks';
 import PromoCard from 'src/components/PromoCardGrid/promoCard';
 import GalleryEditingList from 'src/components/ImageGallery/galleryEditingList';
 import GalleryCarousel from 'src/components/ImageGallery/galleryCarousel';
+import { resolveBackground } from 'src/components/CallToActionBanner/ctaBannerBackground';
 
 const importMap = [
   {
@@ -25,11 +27,13 @@ const importMap = [
     exports: [
       { name: 'jsx', value: jsx },
       { name: 'jsxs', value: jsxs },
+      { name: 'Fragment', value: Fragment },
     ]
   },
   {
     module: 'react',
     exports: [
+      { name: 'useId', value: useId },
       { name: 'default', value: React },
     ]
   },
@@ -47,6 +51,7 @@ const importMap = [
       { name: 'Image', value: Image },
       { name: 'NextImage', value: NextImage },
       { name: 'Text', value: Text },
+      { name: 'RichText', value: RichText },
     ]
   },
   {
@@ -89,6 +94,12 @@ const importMap = [
     module: 'src/components/ImageGallery/galleryCarousel',
     exports: [
       { name: 'default', value: GalleryCarousel },
+    ]
+  },
+  {
+    module: 'src/components/CallToActionBanner/ctaBannerBackground',
+    exports: [
+      { name: 'resolveBackground', value: resolveBackground },
     ]
   }
 ] as ImportEntry[];

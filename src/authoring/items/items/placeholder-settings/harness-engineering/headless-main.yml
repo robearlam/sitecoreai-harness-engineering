@@ -9,7 +9,7 @@ SharedFields:
   Value: "headless-main"
 - ID: "dbbbeca1-21c7-4906-9dd2-493c1efa59a2"
   Hint: __Shared revision
-  Value: "31a6de04-c4b5-41e8-8031-35835bf0f4ef"
+  Value: "578d5c67-5eef-4f15-8c72-26fd1cffbe72"
 - ID: "e391b526-d0c5-439d-803e-17512eae6222"
   Hint: Allowed Controls
   Value: |
@@ -29,6 +29,7 @@ SharedFields:
     {CAA0C742-F052-49FB-825B-A03494798DB7}
     {57573AF2-9D3C-4078-AAB7-35E580E4823B}
     {1D86CBF4-C62E-4EC2-B09C-4C2E939A2A93}
+    {E391D4B2-B2A5-44B4-B2FD-7558BDC63B51}
 Languages:
 - Language: en
   Versions:
@@ -47,11 +48,11 @@ Languages:
         sitecore\rob.earlam@sitecore.com
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "6a87d5cb-88e4-4b49-bac7-69196c080cc7"
+      Value: "e7269f6c-0eec-4f9b-bfcb-859f815e7556"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\rob.earlam@sitecore.com
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20261014T022048Z
+      Value: 20261124T023512Z
