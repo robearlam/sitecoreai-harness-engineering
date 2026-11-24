@@ -1,0 +1,40 @@
+﻿---
+ID: "897d66c1-c857-47a3-807c-d914e3f4a762"
+Parent: "9dbd9fa9-0b17-4d9a-a27e-d5fa981401b1"
+Template: "9dbd9fa9-0b17-4d9a-a27e-d5fa981401b1"
+Path: "/sitecore/templates/Feature/harness-engineering/CallToActionBanner Folder/__Standard Values"
+SharedFields:
+- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
+  Hint: __Masters
+  Value: "{97E7FC0A-2F52-44DB-ACA2-7D7E42C26DB4}"
+- ID: "dbbbeca1-21c7-4906-9dd2-493c1efa59a2"
+  Hint: __Shared revision
+  Value: "6bdfa637-8b1b-4559-abb2-ec3a4a3b67b3"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261124T023416Z
+    - ID: "4c346442-e859-4efd-89b2-44aedf467d21"
+      Hint: __Valid to
+      Value: 
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "41727285-e28d-4cbb-8258-cdf41a0c7559"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "c8f93afe-bfd4-4e8f-9c61-152559854661"
+      Hint: __Valid from
+      Value: 
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261124T023505Z

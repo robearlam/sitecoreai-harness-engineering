@@ -26,6 +26,9 @@ import * as headerTypes from 'src/components/Header/headerTypes';
 import * as headerNav from 'src/components/Header/headerNav';
 import * as headerLogo from 'src/components/Header/headerLogo';
 import * as Header from 'src/components/Header/Header';
+import * as ctaBannerBackground from 'src/components/CallToActionBanner/ctaBannerBackground';
+import * as callToActionBannerTypes from 'src/components/CallToActionBanner/callToActionBannerTypes';
+import * as CallToActionBanner from 'src/components/CallToActionBanner/CallToActionBanner';
 
 export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['BYOCWrapper', BYOCServerWrapper],
@@ -53,6 +56,9 @@ export const componentMap = new Map<string, NextjsContentSdkComponent>([
   ['headerNav', { ...headerNav }],
   ['headerLogo', { ...headerLogo }],
   ['Header', { ...Header, componentType: 'client' }],
+  ['ctaBannerBackground', { ...ctaBannerBackground }],
+  ['callToActionBannerTypes', { ...callToActionBannerTypes }],
+  ['CallToActionBanner', { ...CallToActionBanner }],
 ]);
 
 export default componentMap;

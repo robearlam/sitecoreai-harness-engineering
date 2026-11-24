@@ -1,0 +1,38 @@
+﻿---
+ID: "dbd943f1-bfa0-49fc-bea1-602d5e710e8b"
+Parent: "15876813-5b53-41b6-9e93-ad6c63785dd6"
+Template: "97e7fc0a-2f52-44db-aca2-7d7e42c26db4"
+Path: "/sitecore/content/harness-engineering/harness-engineering/Data/CallToActionBanner Folder/Banner B Image"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "1004aabb-a716-4de6-aeb2-3186eb0c13d0"
+      Hint: PrimaryAction
+      Value: |
+        <link text="Book a demo" linktype="external" url="https://www.sitecore.com" anchor="" target="" />
+    - ID: "1089de90-75b1-4391-8e52-a47a3193dfd1"
+      Hint: Heading
+      Value: See it in action
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261124T023526Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "71c40de1-3ee0-4aae-818c-0efc6c8a40b6"
+      Hint: BackgroundImage
+      Value: |
+        <image mediaid="{D51CB054-BF89-447A-8FB2-C58C6944945B}" />
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "5f8a3ebc-4c87-49b2-bade-3fa3bdea13ce"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261124T023526Z

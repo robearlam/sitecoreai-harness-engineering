@@ -1,0 +1,30 @@
+﻿---
+ID: "c0ddc18a-481d-4ccd-a261-7d70364db47e"
+Parent: "2c8d99a3-b38f-42b9-831e-53e82eb5d28c"
+Template: "8656809b-bfd5-4efe-b2a4-5483aa5bac4a"
+Path: "/sitecore/content/harness-engineering/harness-engineering/Data/CallToActionBanner Folder/Background Colour Options/Primary"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261124T023444Z
+    - ID: "45eda3b7-24f6-4703-9998-5cd42aaa34ea"
+      Hint: Value
+      Value: primary
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "f32bc1ad-0d78-419f-9014-f1fd98c62184"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261124T023444Z

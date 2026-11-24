@@ -1,0 +1,50 @@
+﻿---
+ID: "97e7fc0a-2f52-44db-aca2-7d7e42c26db4"
+Parent: "0ace7ce2-196f-48a8-b06a-ae14954d0baa"
+Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
+Path: "/sitecore/templates/Feature/harness-engineering/CallToActionBanner"
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Office/32x32/megaphone.png
+- ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
+  Hint: __Base template
+  Value: |
+    {44A022DB-56D3-419A-B43B-E27E4D8E9C41}
+    {1930BBEB-7805-471A-A3BE-4858AC7CF696}
+- ID: "dbbbeca1-21c7-4906-9dd2-493c1efa59a2"
+  Hint: __Shared revision
+  Value: "b545fe82-c136-406b-8c06-e362e6d2db1c"
+- ID: "f7d48a55-2158-4f02-9356-756654404f73"
+  Hint: __Standard values
+  Value: "{7492A2DE-308C-4500-8E77-0244F6541E0B}"
+Languages:
+- Language: en
+  Fields:
+  - ID: "30e85e5d-e00a-4864-b358-7624d511deb4"
+    Hint: __Unversioned revision
+    Value: "09911ef9-f064-4db1-8b4d-b2dd47999e93"
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20261124T023418Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "abacf21c-24cf-4267-9c46-3ba2bc747abc"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\rob.earlam@sitecore.com
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20261124T023456Z
