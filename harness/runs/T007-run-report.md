@@ -36,6 +36,14 @@ Outcome: design note produced: 60% black scrim, sm stacking breakpoint, per-back
 
 Outcome: plan produced: single server component, 4 slices; CMS prerequisites per D-005 (no create_component items, no paths). `verify-stage.sh plan` passed.
 
+### Build — RUN-2026-11-24-T007-BUILD — 2026-11-24
+
+Outcome: implemented and committed fc43716; lint + 112 tests pass; production build unverified (MV-007). `verify-stage.sh build` passed.
+
+### QA — RUN-2026-11-24-T007-QA — 2026-11-24
+
+Outcome: Pass With Minor Issues; no blocking issues; 5 non-blocking findings; pre-existing lint-glob gap recorded. `verify-stage.sh qa` passed.
+
 ---
 
 ## Artifact Paths
@@ -102,3 +110,27 @@ Added `CallToActionBanner`, a server component, following the plan's four slices
 ## Notes
 
 
+
+### Build — orchestrator check (2026-11-24)
+
+- Confirmed: commit `fc43716`, clean working tree, `npm test` with 10 suites and 112 tests passing (re-run by the orchestrator), clean lint, component map entries present, and no `primary` Tailwind utilities.
+- **Unverified:** the production build (`[MV-007]`, no Sitecore environment config; known limit D-001), and type-check apart from the pre-existing missing `.sitecore/sites.json` errors. Carried forward to QA.
+- Carried forward to QA: the SDK `Image` with `editable={false}` and `alt=""` is mocked in the tests, so its real output is unconfirmed. The component uses `useId` for the heading id in a server component. `package.json` has no `type-check` script, though the plan and AGENTS.md name one (Build used `npx tsc --noEmit`).
+
+### Correctness pass and QA (2026-11-24)
+
+`/code-review high` on `cd6c213..HEAD` found 5 issues. QA decided:
+
+| # | Finding | QA decision |
+|---|---|---|
+| 1 | Body that contains only markup (`<p></p>`) still renders its wrapper (`CallToActionBanner.tsx:26`) | Confirmed, non-blocking (Medium). If Pages saves `<p></p>` when Body is cleared, it's an AC 4 defect to fix before Complete |
+| 2 | A link with an href but no text shows the href as its label (`:28`) | Confirmed, non-blocking (Low). Standard SDK behaviour |
+| 3 | `hasScrim` unused (`:23`) | Confirmed, non-blocking (Low). Cleanup |
+| 4 | Some tests use DOM structure and compare class strings (`ctaBannerBackground.test.ts:56`) | Partly confirmed, non-blocking (Low) |
+| 5 | Empty Heading in editing mode gives the region the accessible name "[No text in field]" (`:38`) | Confirmed, non-blocking (Low). Editors only |
+
+QA verdict: **Pass With Minor Issues**. Candidate follow-up: "CTA Banner polish" (items 1, 3, 4, 5).
+
+**Pre-existing tooling finding (not T007):** `npm run lint` never checks component files. npm's `sh` doesn't expand `**` in the script's glob `./src/**/*.tsx ./src/**/*.ts`, so it matches only `src/*/*.ts(x)` (9 files). "Lint clean", in this run and earlier ones, didn't cover `CallToActionBanner/`. CI uses the same script. `package.json` also lacks the `type-check` script that AGENTS.md and the plan name. Candidate tooling task.
+
+Comparison with the first attempt: QA's earlier non-blocking findings (content left-aligned, no focus ring on body links, no width cap on stacked buttons, `hasRichText` treating media-only bodies as empty) did **not** recur. The design note specified centring, focus treatment, and stacking without being prompted.
