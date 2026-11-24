@@ -29,7 +29,7 @@ Feature Specification: `harness/artifacts/specs/{{TASK_ID}}-feature-spec.md`
 Design Note: `harness/artifacts/design/{{TASK_ID}}-design-note.md`  
 Implementation Plan: `harness/artifacts/plans/{{TASK_ID}}-implementation-plan.md`  
 QA Review: `harness/artifacts/qa/{{TASK_ID}}-qa-review.md`  
-CMS Configuration Guide: `harness/artifacts/cms-config/{{TASK_ID}}-cms-config.md`  
+CMS Configuration Record: `harness/artifacts/cms-config/{{TASK_ID}}-cms-config.md`  
 Run Report: `harness/runs/{{TASK_ID}}-run-report.md`
 
 ---
@@ -39,7 +39,7 @@ Run Report: `harness/runs/{{TASK_ID}}-run-report.md`
 ### In Scope
 
 - What the task delivers: renderings, behaviours, Sitecore templates (with field types),
-  tests, and the CMS Configuration Guide.
+  tests, and the CMS configuration.
 
 ### Out of Scope
 

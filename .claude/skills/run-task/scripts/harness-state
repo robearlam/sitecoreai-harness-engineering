@@ -170,7 +170,7 @@ def next_action(rs):
     if rs.status == "Blocked":
         return "human resolves the blocker, then `harness-state resume`"
     if rs.stage == "Awaiting Approval":
-        return "human reviews the QA review and CMS guide, then /approve"
+        return "human reviews the QA review and CMS record, completes its Manual Steps, then /approve"
     if rs.stage == "Build" and rs.status == HUMAN:
         return "approval required before Build — /approve"
     agent = BY_NAME[rs.stage][3]

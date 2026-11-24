@@ -23,7 +23,7 @@ Task definition
        ↓
    QA                    ← qa                   → qa-review.md
        ↓
-   CMS Configuration     ← cms-config           → cms-config.md         (skipped when Not Required)
+   CMS Configuration     ← cms-config           → items in XM Cloud via MCP + cms-config.md record   (skipped when Not Required)
        ↓
    Awaiting Approval     ← human gate (/approve)
        ↓
@@ -41,8 +41,9 @@ Every stage produces an artifact at a canonical path. The next stage reads only 
 | `../.claude/agents/` | The stage agents — each one's role, input contract, model, tools, and preloaded skills in a single file. |
 | `../.claude/skills/` | `new-task` (creates task definitions), `run-task` (the orchestrator, with its `harness-state` script), the `approve` gate command, and the coding, testing, and UI design-system standards preloaded into the stage agents. |
 | `../.claude/hooks/` | SessionStart loads the live run-state; SubagentStop verifies each stage's artifact. |
-| `../.claude/settings.json` | Governance: what agents may and may not edit or run. |
-| `templates/` | The blueprint for every artifact (feature spec, design note, plan, QA review, CMS guide, run state, run report, task). |
+| `../.claude/settings.json` | Governance: what agents may and may not edit or run, including which Sitecore MCP tools are allowed, need approval, or are blocked. |
+| `../.mcp.json` | The Sitecore Developer and Marketer MCP servers the CMS Configuration stage writes through. |
+| `templates/` | The blueprint for every artifact (feature spec, design note, plan, QA review, CMS record, run state, run report, task). |
 | `tasks/` | Durable task definitions — one per feature, named `T001-feature-name.md`. |
 | `artifacts/` | Generated artifacts per task per stage: `specs/`, `design/`, `plans/`, `qa/`, `cms-config/`. |
 | `runs/` | Per-task run reports — `TASKID-run-report.md`. |
@@ -70,13 +71,15 @@ Two settings in the task header shape the run, and `/new-task` picks them for yo
 
 Only a **blocking** issue sends the task back to Build: an acceptance criterion broken in normal use, a security issue, a regression, or failing tests, lint, or type-check. Edge cases, refactoring suggestions, and cleanups are recorded as non-blocking and grouped into a candidate follow-up task for you to decide at approval. At most 3 Build passes, then the run stops as Blocked.
 
+The CMS Configuration stage creates the task's Sitecore items in XM Cloud itself, through the Sitecore MCP servers (see [Sitecore MCP servers](#sitecore-mcp-servers)). Its writes run without prompting: a hook allows them only during this stage and logs each one, and you review the result, with a rollback list, at Awaiting Approval.
+
 The run stops at Awaiting Approval. `/run-task` with no argument resumes the active task from run-state.
 
 Add "with approval before Build" when you start a task if you want to review the plan before any code is written.
 
 ### 3. Review, configure, approve
 
-At Awaiting Approval, review the QA review and the CMS Configuration Guide. Follow the guide to create the items in XM Cloud and run `dotnet sitecore ser pull`. Then run `/approve` with your decision:
+At Awaiting Approval, review the QA review and the CMS Configuration Record: what the agent created, the read-back and on-page checks, and its Manual Steps. Do the Manual Steps: upload any media it lists, run `dotnet sitecore ser pull`, and commit the serialized items. Then run `/approve` with your decision:
 
 - **Approved** — records your decision in the task file, marks the task Complete, and commits. Open the pull request yourself.
 - **Corrections needed** — the task goes back to Build with your corrections.
@@ -94,8 +97,24 @@ The harness runs on Claude Code only (see `decisions.md`, D-001).
 
 - The **main session** plays the orchestrator through the `/run-task` skill. Its judgment calls (carry-forwards, outcome triage) are in the skill; every run-state transition goes through `.claude/skills/run-task/scripts/harness-state`. Subagents cannot spawn subagents, which is why the orchestrator is not one.
 - Each **stage agent** is a single file in `.claude/agents/` and runs in its own context, so one stage's reading never bloats the next. It preloads the standards it needs from `.claude/skills/` through its `skills:` frontmatter.
-- **`.claude/settings.json`** enforces governance: edits to agents, skills, templates, and run-state are denied; `.env` files can't be read or edited; pushing serialized items or publishing to the CMS is blocked.
-- **Hooks** in `.claude/hooks/` load the live run-state at session start and verify each stage's artifact when its agent finishes. A failed verification sends the agent back once to repair it.
+- **`.claude/settings.json`** enforces governance: edits to agents, skills, templates, run-state, the settings file itself, and `.mcp.json` are denied; `.env` files can't be read or edited; pushing serialized items or publishing to the CMS is blocked. Sitecore MCP read and write tools are allowed (writes are guarded by a hook, below), and the Marketer MCP's personalization, experiment, brief, and asset tools are blocked.
+
+### Sitecore MCP servers
+
+`.mcp.json` defines two servers, used only by the CMS Configuration stage for writes:
+
+| Server | What the harness uses it for |
+|---|---|
+| `sc-developer` | Content types (data templates) and components (JSON renderings), including site availability |
+| `sc-marketer` | Item look-ups, creating items, updating fields on any item, pages, Partial and Page Design layout, screenshots, deleting items a run created |
+
+Setup, once per machine:
+
+1. Start Claude Code in the repo and approve the two project MCP servers when asked.
+2. Run `/mcp` and sign in to each server. When asked for an organization and tenant, choose the **same non-production** tenant for both.
+
+The repo cannot choose the environment: each server uses whichever tenant you signed in to. Before any write, the CMS agent checks that both servers list the `harness-engineering` site with the same ID, and stops if they don't.
+- **Hooks** in `.claude/hooks/` load the live run-state at session start and verify each stage's artifact when its agent finishes. A failed verification sends the agent back once to repair it. `cms-mcp-guard.py` runs on every Sitecore MCP call: it denies writes unless run-state shows the CMS Configuration stage Active, denies deleting anything the current run didn't create, and logs each write to `runs/TASKID-cms-writes.jsonl`, which `verify-stage.sh` checks against the CMS record.
 
 ---
 
@@ -117,13 +136,14 @@ If a stage agent finds its allowed inputs insufficient, the correct behaviour is
 - **A stage failed verification.** Check the named artifact path — the file is missing, empty, or missing a required heading. `harness-state advance` refuses to move on until it is fixed.
 - **QA returned the task to Build.** The QA review lists the blocking issues. After 3 Build passes the run stops as `Blocked`; fix the cause, then `harness-state resume`.
 - **Build couldn't pass `npm run build`.** Usually missing Sitecore environment configuration. Build records it as a pre-existing failure; QA and you decide whether it matters.
-- **The CMS agent couldn't fetch the Accelerate Cookbook recipe.** It stops rather than guessing. Resolve access, then `harness-state resume` and `/run-task`.
+- **The CMS agent stopped at the environment check.** One or both Sitecore MCP servers aren't connected, aren't signed in, or are signed in to different tenants. Fix it with `/mcp`, then `harness-state resume` and `/run-task`.
+- **The CMS record says Partial.** A write failed or the guard denied one. The record lists what was done and what's left under Manual Steps; finish those by hand, or fix the cause and re-run the stage (it reuses items that already exist).
 
 ---
 
 ## Modifying the harness itself
 
-`harness/templates/`, `.claude/agents/`, and `.claude/skills/` are governance-controlled; `.claude/settings.json` denies edits to them so stage agents cannot modify them during feature work.
+`harness/templates/`, `.claude/agents/`, `.claude/skills/`, `.claude/settings.json`, and `.mcp.json` are governance-controlled; `.claude/settings.json` denies edits to them so stage agents cannot modify them during feature work.
 
 When you do want to change the harness:
 
@@ -144,6 +164,6 @@ When you do want to change the harness:
 | Tech Lead | Opus | Architectural and component-map decisions are costly to get wrong |
 | Build | Sonnet | Workhorse implementation, verified by QA |
 | QA | Opus | Last automated gate; its failure mode is a false Pass |
-| CMS Configuration | Sonnet | Template- and rule-driven guide generation |
+| CMS Configuration | Sonnet | Rule-driven CMS writes, guarded and logged by a hook, read back, and reviewed by the human at the end |
 
 Each stage agent pins its model in the `model:` field of its frontmatter.

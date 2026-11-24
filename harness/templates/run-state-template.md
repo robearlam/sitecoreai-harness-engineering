@@ -33,7 +33,7 @@ Feature Specification: {{FEATURE_SPEC_PATH}}
 Design Note: {{DESIGN_NOTE_PATH}}  
 Implementation Plan: {{IMPLEMENTATION_PLAN_PATH}}  
 QA Review: {{QA_REVIEW_PATH}}  
-CMS Configuration Guide: {{CMS_CONFIG_PATH}}  
+CMS Configuration Record: {{CMS_CONFIG_PATH}}  
 Run Report: {{RUN_REPORT_PATH}}
 
 ---

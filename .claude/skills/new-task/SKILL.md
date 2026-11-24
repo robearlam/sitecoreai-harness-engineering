@@ -32,7 +32,7 @@ Do not read the codebase beyond that, or any harness artifacts. Implementation d
 4. **Ask before writing** only when a decision materially changes the scope and you cannot resolve it from the backlog entry and the human's request — for example, two plausible interpretations of the feature. Ask once, with your recommendation. Otherwise proceed.
 5. **Write the task file** from the template, filling every section:
    - **Summary** — the user-facing outcome in a short paragraph: what the feature is, where it renders (which placeholder), and how content is authored.
-   - **In Scope** — the renderings, behaviours, Sitecore templates, tests, and CMS guide the task delivers, at the level of *what*, not *how*. Name fields by their Sitecore field type (Single-Line Text, Image, General Link, Multilist) — the CMS stage depends on it.
+   - **In Scope** — the renderings, behaviours, Sitecore templates, tests, and CMS configuration the task delivers, at the level of *what*, not *how*. Name fields by their Sitecore field type (Single-Line Text, Image, General Link, Multilist) — the CMS stage depends on it.
    - **Out of Scope** — the plausible extensions a reader might assume are included. This list is what keeps the spec bounded; make it specific.
    - **Acceptance Criteria** — the minimum the task must deliver, phrased so each one can be checked. The Specification stage finalises them.
    - **Dependencies** — earlier tasks, placeholders, Page Designs, design-system tokens, or content this task relies on.

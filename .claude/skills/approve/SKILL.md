@@ -15,7 +15,7 @@ If the run is at `Build` and awaiting human action, run `harness-state approve`,
 
 ## Awaiting Approval
 
-The human has reviewed the QA review and the CMS Configuration Guide (if the task has one). Take their decision from `$ARGUMENTS` and the conversation. If no explicit decision was given, ask for it and stop. Do not infer approval.
+The human has reviewed the QA review and the CMS Configuration Record (if the task has one), and completed its Manual Steps. Take their decision from `$ARGUMENTS` and the conversation. If no explicit decision was given, ask for it and stop. Do not infer approval.
 
 Record **exactly what the human stated** and nothing more.
 

@@ -28,7 +28,8 @@ Every feature is delivered through the harness. `/new-task` turns a backlog item
 .claude/agents/      Stage agents — role, input contract, model, tools, preloaded skills
 .claude/skills/      /new-task, /run-task (orchestrator + state script), /approve, and the standards
 .claude/hooks/       SessionStart (run-state context) and SubagentStop (artifact verification)
-.claude/settings.json  Governance: permission allow/deny rules and hook wiring
+.claude/settings.json  Governance: permission allow/ask/deny rules (including MCP tools) and hook wiring
+.mcp.json            Sitecore MCP servers used by the CMS Configuration stage (sc-developer, sc-marketer)
 harness/             Templates, tasks, artifacts, run reports, run state, decisions
 src/headapps/…       Next.js App Router head application (has its own AGENTS.md)
 src/authoring/       Sitecore platform items and serialized content
@@ -53,7 +54,7 @@ There are no repo-root build/test commands.
 
 **Workflow state lives in `harness/run-state.md` and only there.** Only the `harness-state` script updates it — never by hand, and never from a stage agent. Task files under `harness/tasks/` are durable definitions and change only when the human asks.
 
-**Governance is enforced by `.claude/settings.json`.** Edits to agents, skills, templates, and run-state are denied. Change the harness only when the human explicitly asks for a harness change — and the human, not Claude, lifts the relevant deny rule.
+**Governance is enforced by `.claude/settings.json`.** Edits to agents, skills, templates, run-state, `.claude/settings.json`, and `.mcp.json` are denied. Change the harness only when the human explicitly asks for a harness change — and the human, not Claude, lifts the relevant deny rule.
 
 **Stay within your stage's input contract.** Each stage agent's Inputs section lists what it may read. If a required input is missing, escalate — do not search the codebase to fill the gap.
 
@@ -65,10 +66,12 @@ There are no repo-root build/test commands.
 - Design notes → `harness/artifacts/design/TASKID-design-note.md`
 - Plans → `harness/artifacts/plans/TASKID-implementation-plan.md`
 - QA reviews → `harness/artifacts/qa/TASKID-qa-review.md`
-- CMS configuration guides → `harness/artifacts/cms-config/TASKID-cms-config.md`
+- CMS configuration records → `harness/artifacts/cms-config/TASKID-cms-config.md`
 - Run reports → `harness/runs/TASKID-run-report.md`
 
-**CMS changes are manual.** The CMS Configuration agent writes the guide and adds missing serialization includes; the human creates the items in XM Cloud and runs `dotnet sitecore ser pull`. Pushing serialized items or publishing is never done by Claude.
+**CMS changes go through the CMS Configuration agent only.** That agent creates and verifies the Sitecore items in XM Cloud through the Sitecore MCP servers in `.mcp.json`, after checking that both servers point at the same `harness-engineering` site. Writes run without prompting: the `cms-mcp-guard` hook allows Sitecore MCP writes only while run-state shows the CMS Configuration stage Active, limits deletes to items the run created, and logs every write to `harness/runs/TASKID-cms-writes.jsonl`. The agent records what it did, with a rollback list, in the CMS Configuration Record and adds missing serialization includes. The human reviews the result at Awaiting Approval, uploads any media, runs `dotnet sitecore ser pull`, and commits the result. Pushing serialized items or publishing is never done by Claude. Outside that stage, use the MCP servers read-only.
+
+**Sitecore MCP setup.** `.mcp.json` defines `sc-developer` and `sc-marketer`. Approve them when Claude Code first asks, then sign in to each with `/mcp`. Sign both in to the **same non-production** organization and tenant: the repo cannot choose the environment, and the agent stops if the two servers disagree.
 
 ## Security Considerations
 

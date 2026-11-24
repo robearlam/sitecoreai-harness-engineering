@@ -81,3 +81,41 @@ Why the harness looks the way it does. Each entry records what was chosen, why, 
 - **Letting `/code-review` diff against `main`.** That only works when every task starts from `main`, which rehearsals, stacked work, and demo branches don't.
 
 **When to revisit:** If non-blocking findings pile up unaddressed in follow-up tasks, or if the correctness pass's repeated findings across rounds (6 of 10 in the dry run's third pass) become worth deduplicating before QA.
+
+---
+
+## D-004: The CMS Configuration stage writes to XM Cloud through the Sitecore MCP servers
+
+**What we chose (2026-11-24):** The CMS Configuration agent no longer writes a guide for a human to follow. It creates and verifies the Sitecore items itself, through two Sitecore MCP servers, and writes a CMS Configuration Record of what it did.
+
+1. **Two servers, defined in the repo.** `.mcp.json` defines `sc-developer` (the Sitecore Developer MCP: content types and components) and `sc-marketer` (the Sitecore Marketer MCP: items, pages, layout, screenshots, deletion). Each developer signs in with their own browser OAuth; no credentials are in the repo.
+2. **Environment check before any write.** Both servers must list the `harness-engineering` site with the same ID, or the agent stops. Each server picks its organization and tenant at sign-in, so the repo cannot pin the environment; this check is what keeps the agent off the wrong one.
+3. **Writes run unattended, guarded and logged by a hook.** `.claude/settings.json` allows the read and write tools the stage needs, by name, and denies the Marketer MCP's personalization, experiment, brief, and asset-metadata tools. The agent's `tools:` frontmatter also lists its MCP tools one by one. A `PreToolUse` hook, `.claude/hooks/cms-mcp-guard.py`, denies any Sitecore MCP write unless run-state shows the CMS Configuration stage Active, and denies `delete_content` on any item the current run didn't create. A `PostToolUse` hook logs every write to `harness/runs/TASKID-cms-writes.jsonl`. The agent never writes to that log.
+4. **The human reviews at the end, not per call.** `verify-stage.sh cms` checks the record against the write log in both directions: every logged write is in Changes Applied, every Created/Updated/Deleted row is in the log, and every created item is in the record's Rollback list. The human reviews the record, the component in Pages, and the `ser pull` diff at Awaiting Approval, and can undo the run from the Rollback list.
+5. **The Accelerate Cookbook recipe is no longer the source of truth.** `create_component` replaces the Clone Rendering script; the MCP's own creation guide says not to follow a separate clone recipe.
+6. **The artifact is a record.** `cms-config.md` keeps its path but now holds the environment check, every change with its item ID and read-back result, the verification results, serialization coverage, the Manual Steps left for the human, and a Rollback list. `verify-stage.sh cms` checks the new sections.
+7. **What stays with the human:** uploading media (there is no upload tool), `dotnet sitecore ser pull` and committing its output, and publishing.
+
+**Why:**
+
+- Every CMS guide (T001–T006, 323–595 lines each) asked a human to retype names, GUIDs, and queries into Content Editor. Most of the agent's precision rules — Placeholder Key, `#` escaping in queries, Clone Rendering's Create Copy, `@@templatename` until GUIDs are known — existed to stop humans mistyping. The agent now writes those values itself and reads them back.
+- A throwaway probe on a test tenant (a `ZZ Probe` component, created, verified, and deleted) confirmed every step a guide contains except media upload: templates with `$site` and `#escaped#` sources and real `@@templateid` GUIDs, standard values, the component, Available Renderings, rendering fields, placeholder settings, data and datasource items, a test page, Partial and Page Designs, screenshots, and deletion.
+- Verification is now real. Screenshots showed the SXA "component is missing React implementation" placeholder when the CMS and the rendering host disagreed, so a component-map mismatch is caught at this stage instead of by the human.
+
+**Known limits:**
+
+- Both servers are new — the Developer MCP is in beta — and responses vary between runs. Every write is read back for that reason.
+- Creating a component with a new category puts the rendering, a Rendering Parameters template, and a `<Name> Folder` template under `Feature/`, outside our serialization includes. The agent must reuse an existing category under `Project/harness-engineering`, and escalates if there is none. Where the side-effect templates land when an existing Project category is reused has not been tested yet; the agent reads them back and escalates if they land outside `Project/harness-engineering`.
+- Because writes don't prompt, a bad run can make many wrong writes before the human sees them. The guard confines them to the CMS stage and to the tenant that passed the environment check, the log makes every one visible, and the Rollback list undoes them (deleted items go to the recycle bin).
+- The guard can't tell which item an update targets by path; only the item ID is in the call. Updates are limited by stage, not by location, and the record's Rollback list gives the previous value of every field changed on an existing item.
+- Items get new IDs in whichever environment the agent writes to. Other environments still get them through `ser pull`, commit, and the existing push and deploy process.
+- The records for T001–T006 are in the old guide format and would fail the new `verify-stage.sh cms` check. They are history and are not re-verified.
+
+**What we rejected:**
+
+- **Keeping the guide as a fallback path.** Two processes for one stage would drift. Instead, when a write fails or is declined, the record lists the remaining work under Manual Steps.
+- **Letting the agent run `ser pull`.** It only reads from the CMS, but it rewrites hundreds of files under `src/authoring/items/`, and the human should see that diff land.
+- **Approving every write.** The first version of this decision prompted the human on every create, update, and delete: 20–40 prompts per task. That made the stage too heavy to run, and a prompt per call is a weaker review than one check of the whole result against a log the agent can't edit.
+- **Wildcard permission rules per server.** Listing tools explicitly means a tool the servers add later is not silently allowed.
+
+**When to revisit:** If a run makes writes the human didn't expect, add a pause before the CMS stage that shows the planned item list (like `--approval-before-build`). Also revisit when the MCP servers add media upload or a delete tool on the Developer side, or leave beta.
