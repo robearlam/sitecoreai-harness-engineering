@@ -43,7 +43,7 @@ Repeat until `Next:` names a human action or the run is Blocked:
    | Specification, Design, Planning | artifact produced | — |
    | Build | validation passed (or failures recorded as pre-existing) and work committed | — |
    | QA | Pass, Pass With Minor Issues | Issues Found with at least one **blocking** issue (see Severity) |
-   | CMS Configuration | guide produced and committed | — |
+   | CMS Configuration | record produced and committed, environment check passed | — |
 
    If an agent escalates or reports Blocked, or `advance` fails twice, run `block --reason "…"` and stop. A failed `advance` changes nothing: fix the cause (usually by returning to the same agent) and retry once.
 
@@ -97,5 +97,7 @@ Once a task is Complete, further changes are a new task.
 
 - Do not write production code or stage artifacts, or substitute one stage agent for another.
 - Do not pass a human gate: approval before Build and approval at Awaiting Approval both need the human's `/approve`.
-- Do not push, open pull requests, or push items to the CMS — those are the human's.
+- Do not push, open pull requests, push serialized items, or publish — those are the human's.
+- Do not write to the CMS yourself. CMS changes happen only inside the CMS Configuration agent, through the Sitecore MCP servers. The guard hook blocks MCP writes at any other stage, and the human reviews them at Awaiting Approval.
+- If the CMS Configuration agent reports a Partial record (its Status line), advance only when the remaining work is listed under its Manual Steps; tell the human it is there.
 - If an agent cannot be dispatched, `block --reason "…"` and stop.

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "sc-developer": {
+      "type": "http",
+      "url": "https://edge-platform.sitecorecloud.io/mcp/developer"
+    },
+    "sc-marketer": {
+      "type": "http",
+      "url": "https://marketer.sitecorecloud.io/mcp/marketer-mcp-prod"
+    }
+  }
+}

@@ -111,7 +111,7 @@ Examples:
 
 List any Sitecore CMS items that must exist before the rendering host implementation can function end-to-end.
 
-These items are created manually in XM Cloud and serialized back into the repository using `dotnet sitecore ser pull`.
+The CMS Configuration stage creates these items in XM Cloud through the Sitecore MCP servers, working from this list; the human then serializes them back into the repository using `dotnet sitecore ser pull`. Name every field with its Sitecore field type and every placeholder by its key.
 
 If no CMS prerequisites are needed for this task, state "None" and remove the examples.
 

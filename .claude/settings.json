@@ -11,21 +11,83 @@
       "Bash(npm test *)",
       "Bash(npm run build)",
       "Bash(harness/verify-stage.sh *)",
-      "Bash(.claude/skills/run-task/scripts/harness-state *)"
+      "Bash(.claude/skills/run-task/scripts/harness-state *)",
+      "mcp__sc-developer__list_sites",
+      "mcp__sc-developer__list_component_categories",
+      "mcp__sc-developer__list_components",
+      "mcp__sc-developer__list_component_summaries",
+      "mcp__sc-developer__get_component",
+      "mcp__sc-developer__list_content_types",
+      "mcp__sc-developer__get_content_type",
+      "mcp__sc-developer__get_content_type_validation_rules",
+      "mcp__sc-marketer__list_sites",
+      "mcp__sc-marketer__get_site_information",
+      "mcp__sc-marketer__get_site_id_from_item",
+      "mcp__sc-marketer__get_all_pages_by_site",
+      "mcp__sc-marketer__get_all_languages",
+      "mcp__sc-marketer__get_page",
+      "mcp__sc-marketer__get_page_template_by_id",
+      "mcp__sc-marketer__get_page_html",
+      "mcp__sc-marketer__get_page_screenshot",
+      "mcp__sc-marketer__get_page_preview_url",
+      "mcp__sc-marketer__get_page_path_by_live_url",
+      "mcp__sc-marketer__search_site",
+      "mcp__sc-marketer__get_components_on_page",
+      "mcp__sc-marketer__get_allowed_comps_by_ph",
+      "mcp__sc-marketer__get_content_item_by_path",
+      "mcp__sc-marketer__get_content_item_by_id",
+      "mcp__sc-marketer__get_content_references",
+      "mcp__sc-marketer__list_avail_insertopts",
+      "mcp__sc-marketer__list_components",
+      "mcp__sc-marketer__get_component",
+      "mcp__sc-marketer__search_component_ds",
+      "mcp__sc-marketer__search_assets",
+      "mcp__sc-marketer__get_asset_information",
+      "mcp__sc-developer__create_content_type",
+      "mcp__sc-developer__update_content_type",
+      "mcp__sc-developer__create_component",
+      "mcp__sc-developer__update_component",
+      "mcp__sc-developer__create_content_item",
+      "mcp__sc-marketer__create_content_item",
+      "mcp__sc-marketer__update_fields_on_item",
+      "mcp__sc-marketer__update_content",
+      "mcp__sc-marketer__create_page",
+      "mcp__sc-marketer__add_language_to_page",
+      "mcp__sc-marketer__add_component_on_page",
+      "mcp__sc-marketer__move_component_on_page",
+      "mcp__sc-marketer__remove_component_on_page",
+      "mcp__sc-marketer__set_component_datasource",
+      "mcp__sc-marketer__create_component_ds",
+      "mcp__sc-marketer__delete_content"
     ],
     "deny": [
-      "Edit(harness/templates/**)",
       "Edit(.claude/agents/**)",
       "Edit(.claude/skills/**)",
       "Edit(.claude/hooks/**)",
-      "Edit(harness/run-state.md)",
+      "Edit(harness/templates/**)",
       "Edit(harness/verify-stage.sh)",
+      "Edit(.claude/settings.json)",
+      "Edit(.mcp.json)",
+      "Edit(harness/run-state.md)",
       "Read(**/.env)",
       "Read(**/.env.local)",
       "Edit(**/.env)",
       "Edit(**/.env.local)",
       "Bash(dotnet sitecore ser push*)",
-      "Bash(dotnet sitecore publish*)"
+      "Bash(dotnet sitecore publish*)",
+      "mcp__sc-marketer__create_perso_version",
+      "mcp__sc-marketer__create_perso_version_multi",
+      "mcp__sc-marketer__update_perso_version",
+      "mcp__sc-marketer__hide_component_perso_default_page",
+      "mcp__sc-marketer__create_component_ab_test",
+      "mcp__sc-marketer__update_ab_test",
+      "mcp__sc-marketer__set_component_variant",
+      "mcp__sc-marketer__reset_component_variant",
+      "mcp__sc-marketer__generate_brief_draft",
+      "mcp__sc-marketer__create_brief_from_draft",
+      "mcp__sc-marketer__generate_brief_revision",
+      "mcp__sc-marketer__update_brief_from_revision",
+      "mcp__sc-marketer__update_asset"
     ],
     "ask": [
       "Edit(harness/tasks/**)",
@@ -53,6 +115,30 @@
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/verify-stage-on-stop.sh",
             "timeout": 30,
             "statusMessage": "Verifying stage artifacts…"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "mcp__sc-developer__.*|mcp__sc-marketer__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/cms-mcp-guard.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__sc-developer__.*|mcp__sc-marketer__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/cms-mcp-guard.py",
+            "timeout": 10
           }
         ]
       }
