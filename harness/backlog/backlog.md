@@ -76,13 +76,14 @@ Suggested status values:
 ---
 
 ### B010 — Call to Action Banner
-**Status:** Planned  
-**Summary:** Implement a full-width call-to-action banner component with an authored heading, body text, and one or two action buttons (primary/secondary). Should support configurable background colour or image from Sitecore fields.
+**Status:** Ready for Spec  
+**Summary:** Implement a full-width call-to-action banner component with an authored heading, body text, and one or two action buttons (primary/secondary). Should support configurable background colour or image from Sitecore fields.  
+**Selected as T007**
 
 ---
 
 ### B011 — Image Gallery Component
-**Status:** Ready for Spec  
+**Status:** Done  
 **Summary:** Create a responsive image gallery rendering that displays multiple authored images in a grid or carousel layout. Should use the Sitecore Image field and Next.js Image optimisation. Design direction resolved 2026-10-14: carousel with lightbox (no grid).  
 **Selected as T006**
 
@@ -97,3 +98,9 @@ Suggested status values:
 ### B013 - Automated CI/CD Testing
 **Status:** Done  
 **Summary:** Create GitHub Actions to run the tests built into the head application, to ensure that the code still functions when a PR is opened.
+
+---
+
+### B014 — Move CMS Items to the Feature Layer
+**Status:** Planned  
+**Summary:** Move the Sitecore items for the existing components (T001–T006: Header, SiteFooter, HeroBanner, PromoCardGrid, Image Gallery, and their templates, Rendering Parameters templates, folder templates, and Available Renderings) from the Project layer (`Renderings/Project/harness-engineering`, `templates/Project/harness-engineering`) to the Feature layer (`Feature/harness-engineering`), where the Sitecore Developer MCP's `create_component` puts new components (harness decision D-005). Includes updating serialization includes and checking that pages and Partial Designs still resolve. Also consider fixing the undefined `bg-primary` / `border-primary` utilities in `galleryCarousel.tsx` and introducing real colour tokens, both found during T007.
